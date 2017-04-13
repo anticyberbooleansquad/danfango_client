@@ -6,8 +6,8 @@
 package Main;
 
 import MovieAgency.MoviePush;
-import MovieAgency.MovieScraper;
-import TheatreAgency.TheatreScraper;
+import MovieAgency.MovieAgency;
+import TheatreAgency.TheatreAgency;
 import java.io.IOException;
 import javax.xml.stream.XMLStreamException;
 
@@ -18,11 +18,11 @@ import javax.xml.stream.XMLStreamException;
 public class AgencyController {
     
     public static void main(String[] args) throws IOException, XMLStreamException {
-        MovieScraper ms = new MovieScraper();
-        ms.scrape();
+        MovieAgency ms = new MovieAgency();
+        ms.genXMLFile();
         
-        TheatreScraper ts = new TheatreScraper();
-        ts.getTheatres();
+        TheatreAgency ts = new TheatreAgency();
+        ts.genXMLFile();
     }
     
 }

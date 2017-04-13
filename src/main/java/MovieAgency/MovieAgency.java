@@ -23,9 +23,19 @@ import org.json.JSONObject;
  *
  * @author johnlegutko
  */
-public class MovieScraper {
+public class MovieAgency {
+    
+    
+    public void genXMLFile() throws IOException, XMLStreamException{
+        
+        ArrayList<JSONObject> movies = getMovies();
+       
+        ClientXMLGenerator generator = new ClientXMLGenerator();
+        generator.genMovieXMLFile(movies);
+    }
+    
 
-    public void scrape() throws IOException, XMLStreamException {
+    public ArrayList<JSONObject> getMovies() throws IOException, XMLStreamException {
         Document doc;
         ArrayList<JSONObject> movies;
         String year2016 = "http://www.imdb.com/search/title?year=2016,2016&title_type=feature&sort=moviemeter,asc&view=simple";
@@ -33,19 +43,18 @@ public class MovieScraper {
         String year2018 = "http://www.imdb.com/search/title?year=2018,2018&title_type=feature&sort=moviemeter,asc&view=simple";
 
         doc = Jsoup.connect(year2016).get();
-        movies = parseHTML(doc);
+        movies = parseImdbHTML(doc);
         doc = Jsoup.connect(year2017).get(); 
-        movies.addAll(parseHTML(doc));
+        movies.addAll(parseImdbHTML(doc));
         doc = Jsoup.connect(year2018).get();
-        movies.addAll(parseHTML(doc));
-
-        ClientXMLGenerator generator = new ClientXMLGenerator();
-        generator.genMovieXMLFile(movies);
+        movies.addAll(parseImdbHTML(doc));
+        
+        return movies;
         
 
     }
 
-    public static ArrayList<JSONObject> parseHTML(Document doc) throws IOException, XMLStreamException {
+    public static ArrayList<JSONObject> parseImdbHTML(Document doc) throws IOException, XMLStreamException {
         ArrayList<String> hrefs = new ArrayList();
         ArrayList<String> imdbids = new ArrayList();
         ArrayList<JSONObject> movies = new ArrayList();

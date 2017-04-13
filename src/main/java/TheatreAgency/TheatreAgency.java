@@ -5,6 +5,7 @@
  */
 package TheatreAgency;
 
+import XMLGenerator.ClientXMLGenerator;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -22,9 +23,17 @@ import org.jsoup.select.Elements;
  *
  * @author johnlegutko
  */
-public class TheatreScraper {
+public class TheatreAgency {
+    
+    public void genXMLFile() throws IOException, XMLStreamException{
+        
+        ArrayList<JSONObject> theatres = getTheatres();
+       
+        ClientXMLGenerator generator = new ClientXMLGenerator();
+        generator.genTheatreXMLFile(theatres);
+    }
 
-    public void getTheatres() throws IOException, XMLStreamException {
+    public ArrayList<JSONObject> getTheatres() throws IOException, XMLStreamException {
         ArrayList<JSONObject> theatres = new ArrayList();
         ArrayList<String> theatreIds = new ArrayList();
 
@@ -48,6 +57,8 @@ public class TheatreScraper {
             }
 
         }
+        
+        return theatres;
 
     }
 

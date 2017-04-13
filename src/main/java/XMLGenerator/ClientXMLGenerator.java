@@ -120,11 +120,31 @@ public class ClientXMLGenerator {
             xMLStreamWriter.writeStartElement("theatre");
 
             xMLStreamWriter.writeStartElement("agencyID");
-            xMLStreamWriter.writeCharacters(theatre.get("id").toString());
+            xMLStreamWriter.writeCharacters(theatre.get("theatreId").toString());
             xMLStreamWriter.writeEndElement();
             
             xMLStreamWriter.writeStartElement("name");
             xMLStreamWriter.writeCharacters(theatre.get("name").toString());
+            xMLStreamWriter.writeEndElement();
+            
+            JSONObject locationObj = theatre.getJSONObject("location");
+            JSONObject addressObj = locationObj.getJSONObject("address");
+
+           
+            xMLStreamWriter.writeStartElement("address");
+            xMLStreamWriter.writeCharacters(addressObj.get("street").toString());
+            xMLStreamWriter.writeEndElement();
+            
+            xMLStreamWriter.writeStartElement("city");
+            xMLStreamWriter.writeCharacters(addressObj.get("city").toString());
+            xMLStreamWriter.writeEndElement();
+            
+            xMLStreamWriter.writeStartElement("state");
+            xMLStreamWriter.writeCharacters(addressObj.get("state").toString());
+            xMLStreamWriter.writeEndElement();
+            
+            xMLStreamWriter.writeStartElement("zipcode");
+            xMLStreamWriter.writeCharacters(addressObj.get("postalCode").toString());
             xMLStreamWriter.writeEndElement();
 
               ///////////
