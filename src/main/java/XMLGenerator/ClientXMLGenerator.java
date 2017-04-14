@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class ClientXMLGenerator {
@@ -166,7 +167,7 @@ public class ClientXMLGenerator {
 
     }
 
-    public void genShowingXMLFile(ArrayList<JSONObject> showings) throws XMLStreamException, IOException {
+    public void genShowingXMLFile(ArrayList<JSONObject> movies) throws XMLStreamException, IOException {
         StringWriter stringWriter = new StringWriter();
 
         XMLOutputFactory xMLOutputFactory = XMLOutputFactory.newInstance();
@@ -174,23 +175,28 @@ public class ClientXMLGenerator {
 
         xMLStreamWriter.writeStartDocument();
         xMLStreamWriter.writeStartElement("showings"); //start outer showings
+        
+        for (int i = 0; i < movies.size(); i++) {
+            JSONObject movie = movies.get(i);
 
-        for (JSONObject showing : showings) {
+            String moviename = movie.get("title").toString();
+            int releaseYear = (int) movie.get("releaseYear");
+            String releaseDate = movie.get("releaseDate").toString();
 
-            String moviename = showing.get("title").toString();
-            int releaseYear = (int) showing.get("releaseYear");
-            String releaseDate = showing.get("releaseDate").toString();
+            JSONArray showtimes = movie.getJSONArray("showtimes");
+            JSONObject showing = (JSONObject) showtimes.get(0);
+            JSONObject theatreObj = showing.getJSONObject("theatre");
 
-            JSONObject showtimeObj = showing.getJSONObject("showtimes");
-            JSONObject theatreObj = showtimeObj.getJSONObject("theatre");
             String theatreId = theatreObj.get("id").toString();
             String theatreName = theatreObj.get("name").toString();
 
-            xMLStreamWriter.writeStartElement("theatre");
-            xMLStreamWriter.writeAttribute("id", theatreId);
-            xMLStreamWriter.writeAttribute("name", theatreName);
+            if (i == 0) {
+                xMLStreamWriter.writeStartElement("theatre");
+                xMLStreamWriter.writeAttribute("id", theatreId);
+                xMLStreamWriter.writeAttribute("name", theatreName);
+            }
 
-            for (int i = 0; i < showtimeObj.length(); i++) {
+            for (int j = 0; j < showtimes.length(); j++) {
                 xMLStreamWriter.writeStartElement("showing");
 
                 xMLStreamWriter.writeStartElement("moviename");
@@ -198,7 +204,9 @@ public class ClientXMLGenerator {
                 xMLStreamWriter.writeEndElement();
 
                 xMLStreamWriter.writeStartElement("datetime");
-                xMLStreamWriter.writeCharacters(showtimeObj.get("dateTime").toString());
+                JSONObject showtime = (JSONObject) showtimes.get(j);
+
+                xMLStreamWriter.writeCharacters(showtime.get("dateTime").toString());
                 xMLStreamWriter.writeEndElement();
 
                 xMLStreamWriter.writeEndElement(); //end single showing
