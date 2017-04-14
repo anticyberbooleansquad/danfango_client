@@ -24,16 +24,6 @@ import org.json.JSONObject;
  * @author johnlegutko
  */
 public class MovieAgency {
-    
-    
-    public void genXMLFile() throws IOException, XMLStreamException{
-        
-        ArrayList<JSONObject> movies = getMovies();
-       
-        ClientXMLGenerator generator = new ClientXMLGenerator();
-        generator.genMovieXMLFile(movies);
-    }
-    
 
     public ArrayList<JSONObject> getMovies() throws IOException, XMLStreamException {
         Document doc;

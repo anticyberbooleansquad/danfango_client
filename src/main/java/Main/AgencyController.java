@@ -8,8 +8,11 @@ package Main;
 import MovieAgency.MoviePush;
 import MovieAgency.MovieAgency;
 import TheatreAgency.TheatreAgency;
+import XMLGenerator.ClientXMLGenerator;
 import java.io.IOException;
+import java.util.ArrayList;
 import javax.xml.stream.XMLStreamException;
+import org.json.JSONObject;
 
 /**
  *
@@ -18,12 +21,19 @@ import javax.xml.stream.XMLStreamException;
 public class AgencyController {
     
     public static void main(String[] args) throws IOException, XMLStreamException {
-        MovieAgency ms = new MovieAgency();
-        ms.genXMLFile();
         
-        TheatreAgency ts = new TheatreAgency();
-        ts.genXMLFile();
-        ts.getShowingsForTheatre();
+        ClientXMLGenerator generator = new ClientXMLGenerator();
+        
+        MovieAgency ms = new MovieAgency();
+        ArrayList<JSONObject> movies = ms.getMovies();
+        generator.genMovieXMLFile(movies);
+        
+//        TheatreAgency ts = new TheatreAgency();
+//        ArrayList<JSONObject> theatres = ts.getTheatres();
+//        generator.genTheatreXMLFile(theatres);
+//        
+//        
+//        ts.getShowingsForTheatre();
        
     }
     
