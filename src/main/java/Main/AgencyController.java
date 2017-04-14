@@ -23,7 +23,6 @@ public class AgencyController {
         
         TheatreAgency ts = new TheatreAgency();
         ts.genXMLFile();
-        ts.getShowingsForTheatre();
        
     }
     
