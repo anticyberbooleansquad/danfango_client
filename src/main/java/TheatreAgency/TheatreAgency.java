@@ -43,8 +43,8 @@ public class TheatreAgency {
                     theatreIds.add(theatreId);
                 }
                 // at this point have theatres full 
-                //System.out.println(Arrays.toString(theatres.toArray()));
-                //System.out.println(Arrays.toString(theatreIds.toArray()));
+                System.out.println(Arrays.toString(theatres.toArray()));
+                System.out.println(Arrays.toString(theatreIds.toArray()));
 
             }
 
@@ -86,23 +86,30 @@ public class TheatreAgency {
     public ArrayList<JSONObject> getShowingsForTheatre() throws IOException, XMLStreamException {
 
         ArrayList<String> theatreIds = getTheatreIds();
-        ArrayList<JSONObject> showings = new ArrayList();
+        ArrayList<JSONObject> movies = new ArrayList();
+        
+        
+        theatreIds = new ArrayList<String>();
+        theatreIds.add("2935");
+        theatreIds.add("7587");
+        theatreIds.add("9692");
 
         for (String id : theatreIds) {
-            URL theatreAPI = new URL("http://data.tmsapi.com/v1.1/theatres/" + id + "/showings?startDate=2017-04-14&numDays=7&imageSize=Md&imageText=true&api_key=7k72q6prdt4z44t764r3jw7t");
+            
+            
+            URL theatreAPI = new URL("https://data.tmsapi.com/v1.1/theatres/"+id+"/showings?startDate=2017-04-14&api_key=7k72q6prdt4z44t764r3jw7t");
+            
             try (BufferedReader in = new BufferedReader(new InputStreamReader(theatreAPI.openStream()))) {
                 String inputLine = in.readLine();
-                JSONArray showingsJSON = null;
+                JSONArray jsonArray = null;
                 if (inputLine != null) {
                     System.out.println(inputLine);
-                    showingsJSON = new JSONArray(inputLine);
+                    jsonArray = new JSONArray(inputLine);
 
-                    if (!showingsJSON.isNull(0)) {
-                        for (int i = 0; i < showingsJSON.length(); i++) {
-                            JSONObject jsonObj = showingsJSON.getJSONObject(i);
-                            showings.add(jsonObj);
-                        }
-
+                    
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject jsonObj = jsonArray.getJSONObject(i);
+                        movies.add(jsonObj);
                     }
 
                 }
@@ -110,7 +117,7 @@ public class TheatreAgency {
             }
         }
 
-        return showings;
+        return movies;
 
     }
 
