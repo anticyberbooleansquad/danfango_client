@@ -69,7 +69,7 @@ public class MovieAgency {
             imdbids.add(id);
         }
 
-        System.out.println(Arrays.toString(imdbids.toArray()));
+        //System.out.println(Arrays.toString(imdbids.toArray()));
 
         for (String id : imdbids) {
             URL omdb = new URL("http://www.omdbapi.com/?i=" + id);
@@ -77,7 +77,7 @@ public class MovieAgency {
                 String inputLine =  in.readLine();
                 JSONObject jsonObj = null;
                 if (inputLine != null) {
-                    System.out.println(inputLine);
+                    //System.out.println(inputLine);
                     jsonObj = new JSONObject(inputLine);
 
                     if (!jsonObj.isNull("Title")) {
