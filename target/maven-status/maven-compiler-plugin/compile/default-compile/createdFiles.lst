@@ -1,5 +1,5 @@
 Main/AgencyController.class
-MovieAgency/MovieAgency.class
 TheatreAgency/TheatreAgency.class
+MovieAgency/MovieAgency.class
 MovieAgency/MoviePush.class
 XMLGenerator/ClientXMLGenerator.class

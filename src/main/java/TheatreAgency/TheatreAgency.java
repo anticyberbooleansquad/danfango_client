@@ -25,17 +25,6 @@ import org.jsoup.select.Elements;
  */
 public class TheatreAgency {
 
-    public void genXMLFile() throws IOException, XMLStreamException {
-
-        ArrayList<JSONObject> theatres = getTheatres();
-        ArrayList<JSONObject> showings = getShowingsForTheatre();
-
-
-        ClientXMLGenerator generator = new ClientXMLGenerator();
-        generator.genTheatreXMLFile(theatres);
-        generator.genShowingXMLFile(showings);
-    }
-
     public ArrayList<JSONObject> getTheatres() throws IOException, XMLStreamException {
         ArrayList<JSONObject> theatres = new ArrayList();
         ArrayList<String> theatreIds = new ArrayList();
