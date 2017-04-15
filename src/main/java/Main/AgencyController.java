@@ -5,6 +5,8 @@
  */
 package Main;
 
+import CrewAgency.CrewAgency;
+import CrewAgency.Actor;
 import MovieAgency.MoviePush;
 import MovieAgency.MovieAgency;
 import TheatreAgency.TheatreAgency;
@@ -35,11 +37,35 @@ public class AgencyController {
 
         ClientXMLGenerator generator = new ClientXMLGenerator();
 
+        ///////////// MOVIES ///////////////
         MovieAgency ms = new MovieAgency();
         ArrayList<JSONObject> movies = ms.getMovies();
         generator.genMovieXMLFile(movies);
-
-        TheatreAgency ts = new TheatreAgency();
+        
+        
+        ///////////// ACTORS ///////////////
+        CrewAgency as = new CrewAgency();
+        for(JSONObject movie: movies){
+            as.updateActorsByMovie(movie);
+        }
+       
+        // now that we have updated/created all of the actor objects in the "database" that we're interested in, let's retrieve them
+        ArrayList<Actor> actors = new ArrayList();
+        for(JSONObject movie: movies){
+            String movieId = movie.get("imdbId").toString();
+            Actor actor = as.getActorByMovieId(movieId);
+            actors.add(actor);
+        }
+        // call the xml method here VVVV
+       
+        
+        ///////////// THEATRES  ///////////////
+        
+        
+        ///////////// SHOWINGS ///////////////
+        
+        
+        //TheatreAgency ts = new TheatreAgency();
         //ArrayList<JSONObject> theatres = ts.getTheatres();
         //ArrayList<JSONObject> showings = ts.getShowingsForTheatre(formattedDate);
 

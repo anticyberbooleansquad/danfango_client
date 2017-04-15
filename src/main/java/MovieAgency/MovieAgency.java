@@ -56,11 +56,22 @@ public class MovieAgency {
 //        return crew;
 //
 //    }
+    
+    
+    
+    /**
+     * This method takes in an imdb popular movie page doc and uses the omdb api to return 
+     * a list of movie JsonObjects
+     * @param doc
+     * @return
+     * @throws IOException
+     * @throws XMLStreamException 
+     */
     public static ArrayList<JSONObject> parseImdbHTML(Document doc) throws IOException, XMLStreamException {
         ArrayList<String> hrefs = new ArrayList();
         ArrayList<String> imdbids = new ArrayList();
         ArrayList<JSONObject> movies = new ArrayList();
-        ArrayList<String> crew = new ArrayList();
+        
 
         Elements movieTitles = doc.select("div.col-title > span > span > a");
 
@@ -73,7 +84,9 @@ public class MovieAgency {
             imdbids.add(id);
         }
 
-        //System.out.println(Arrays.toString(imdbids.toArray()));
+        // at this point we have all of the imdb movie ids in the list 
+        // now need to look them up using omdbapi 
+        
         for (String id : imdbids) {
             URL omdb = new URL("http://www.omdbapi.com/?i=" + id);
             try (BufferedReader in = new BufferedReader(new InputStreamReader(omdb.openStream()))) {
@@ -85,53 +98,30 @@ public class MovieAgency {
 
                     if (!jsonObj.isNull("Title")) {
                         movies.add(jsonObj);
-                        String[] actors = jsonObj.get("Actors").toString().split(", ");
-                        String director = jsonObj.get("Director").toString();
-                        String writer = jsonObj.get("Writer").toString();
-
-                        crew.addAll(Arrays.asList(actors));
-
-                        for (String actor : actors) {
-                            crew.add(actor.replace(" ", "_"));
-                        }
-                        crew.add(director.replace(" ", "_"));
-                        crew.add(writer.replace(" ", "_"));
                     }
                 }
 
             }
         }
-        
-        parseWikipediaHTML(crew);
         return movies;
-
     }
+    
+//    public ArrayList<String> getCrewMemberNames (JSONObject movie){
+//        ArrayList<String> crewMemberNames = new ArrayList();
+//        String[] actorNames = movie.get("Actors").toString().split(", ");
+//        String directorName = movie.get("Director").toString();
+//        String writerName = movie.get("Writer").toString();
+//        
+//        crewMemberNames.add(directorName);
+//        crewMemberNames.add(writerName);
+//        for(String actorName: actorNames){
+//            crewMemberNames.add(actorName);
+//        }
+//        return crewMemberNames;
+//    }
+    
+    
 
-    public static void parseWikipediaHTML(ArrayList<String> crewNames) throws IOException, XMLStreamException {
-
-        Document doc;
-
-        for (String crewName : crewNames) {
-            
-            System.out.println("CREWNAME: "+ crewName);
-            String wikipedia = "https://en.wikipedia.org/wiki/" + crewName;
-            doc = Jsoup.connect(wikipedia).get();
-
-            Element content = doc.getElementById("mw-content-text");
-            Elements nameclass = content.getElementsByClass("nickname");
-            Elements bdayclass = content.getElementsByClass("bday");
-            Elements ageclass = content.getElementsByClass("noprint");
-            String name = nameclass.text();
-            String bday = bdayclass.text();
-            String age = ageclass.text().substring(5, 7);
-            String bio = doc.select("div#mw-content-text> p").first().text();
-
-            ClientXMLGenerator gen = new ClientXMLGenerator();
-            gen.genCrewXMLFile(name, bday, age, bio);
-            
-            
-        }
-
-    }
+    
 
 }
