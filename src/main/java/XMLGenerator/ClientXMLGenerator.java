@@ -175,9 +175,13 @@ public class ClientXMLGenerator {
 
         xMLStreamWriter.writeStartDocument();
         xMLStreamWriter.writeStartElement("showings"); //start outer showings
-        
+
         for (int i = 0; i < movies.size(); i++) {
             JSONObject movie = movies.get(i);
+            if (movie.length() == 0) {
+                i++;
+                movie = movies.get(i);
+            }
 
             String moviename = movie.get("title").toString();
             int releaseYear = (int) movie.get("releaseYear");
@@ -233,4 +237,49 @@ public class ClientXMLGenerator {
 
     }
 
+    public void genCrewXMLFile(String name, String dob, String age, String bio) throws XMLStreamException, IOException {
+        StringWriter stringWriter = new StringWriter();
+
+        XMLOutputFactory xMLOutputFactory = XMLOutputFactory.newInstance();
+        XMLStreamWriter xMLStreamWriter = xMLOutputFactory.createXMLStreamWriter(stringWriter);
+
+        xMLStreamWriter.writeStartDocument();
+        xMLStreamWriter.writeStartElement("actors"); //start outer movies
+
+        xMLStreamWriter.writeStartElement("actor");
+
+        xMLStreamWriter.writeStartElement("name");
+        xMLStreamWriter.writeCharacters(name);
+        xMLStreamWriter.writeEndElement();
+
+        xMLStreamWriter.writeStartElement("birthday");
+        xMLStreamWriter.writeCharacters(dob);
+        xMLStreamWriter.writeEndElement();
+
+        xMLStreamWriter.writeStartElement("age");
+        xMLStreamWriter.writeCharacters(age);
+        xMLStreamWriter.writeEndElement();
+
+        xMLStreamWriter.writeStartElement("biography");
+        xMLStreamWriter.writeCharacters(bio);
+        xMLStreamWriter.writeEndElement();
+
+        ///////////
+        xMLStreamWriter.writeEndElement();
+
+        xMLStreamWriter.writeEndElement(); //end outer actors
+
+        xMLStreamWriter.writeEndDocument();
+        xMLStreamWriter.flush();
+        xMLStreamWriter.close();
+
+        String xmlString = stringWriter.getBuffer().toString();
+        stringWriter.close();
+        System.out.println(xmlString);
+
+        FileWriter fw = new FileWriter("actorAgency.xml");
+        fw.write(xmlString);
+        fw.close();
+
+    }
 }

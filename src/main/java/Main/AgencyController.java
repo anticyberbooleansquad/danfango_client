@@ -10,8 +10,10 @@ import MovieAgency.MovieAgency;
 import TheatreAgency.TheatreAgency;
 import XMLGenerator.ClientXMLGenerator;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import javax.xml.stream.XMLStreamException;
 import org.json.JSONObject;
 
@@ -21,8 +23,15 @@ import org.json.JSONObject;
  */
 public class AgencyController {
 
-    public static void main(String[] args) throws IOException, XMLStreamException {
+    public static void main(String[] args) throws IOException, XMLStreamException, InterruptedException {
         System.setProperty("http.agent", "Chrome");
+
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, 1);
+        SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
+
+        String formattedDate = format1.format(cal.getTime());
+        System.out.println("TODAYS DATE: " + formattedDate);
 
         ClientXMLGenerator generator = new ClientXMLGenerator();
 
@@ -31,12 +40,13 @@ public class AgencyController {
         generator.genMovieXMLFile(movies);
 
         TheatreAgency ts = new TheatreAgency();
-        ArrayList<JSONObject> theatres = ts.getTheatres();
-        ArrayList<JSONObject> showings = ts.getShowingsForTheatre();
+        //ArrayList<JSONObject> theatres = ts.getTheatres();
+        //ArrayList<JSONObject> showings = ts.getShowingsForTheatre(formattedDate);
 
-        generator.genTheatreXMLFile(theatres);
+        //generator.genTheatreXMLFile(theatres);
         //generator.genShowingXMLFile(showings);
-        System.out.println(Arrays.toString(showings.toArray()));
+        //System.out.println(Arrays.toString(showings.toArray()));
+        
 
     }
 

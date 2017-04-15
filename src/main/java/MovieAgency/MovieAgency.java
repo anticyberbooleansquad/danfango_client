@@ -24,6 +24,8 @@ import org.json.JSONObject;
  * @author johnlegutko
  */
 public class MovieAgency {
+    
+    private static ArrayList<String> crewMembers;
 
     public ArrayList<JSONObject> getMovies() throws IOException, XMLStreamException {
         Document doc;
@@ -34,20 +36,32 @@ public class MovieAgency {
 
         doc = Jsoup.connect(year2016).get();
         movies = parseImdbHTML(doc);
-        doc = Jsoup.connect(year2017).get(); 
+        doc = Jsoup.connect(year2017).get();
         movies.addAll(parseImdbHTML(doc));
         doc = Jsoup.connect(year2018).get();
         movies.addAll(parseImdbHTML(doc));
-        
+
         return movies;
-        
 
     }
 
+//    public ArrayList<JSONObject> getCrewInfo(String crewName) throws IOException, XMLStreamException {
+//        Document doc;
+//        ArrayList<JSONObject> crew;
+//        String wikipedia = "https://en.wikipedia.org/wiki/Robert_Downey_Jr.";
+//        
+//        doc = Jsoup.connect(wikipedia).get();
+//        crew = parseWikipediaHTML(doc);
+//
+//        return crew;
+//
+//    }
     public static ArrayList<JSONObject> parseImdbHTML(Document doc) throws IOException, XMLStreamException {
         ArrayList<String> hrefs = new ArrayList();
         ArrayList<String> imdbids = new ArrayList();
         ArrayList<JSONObject> movies = new ArrayList();
+        ArrayList<String> crew = new ArrayList();
+
         Elements movieTitles = doc.select("div.col-title > span > span > a");
 
         for (Element e : movieTitles) {
@@ -60,11 +74,10 @@ public class MovieAgency {
         }
 
         //System.out.println(Arrays.toString(imdbids.toArray()));
-
         for (String id : imdbids) {
             URL omdb = new URL("http://www.omdbapi.com/?i=" + id);
             try (BufferedReader in = new BufferedReader(new InputStreamReader(omdb.openStream()))) {
-                String inputLine =  in.readLine();
+                String inputLine = in.readLine();
                 JSONObject jsonObj = null;
                 if (inputLine != null) {
                     //System.out.println(inputLine);
@@ -72,13 +85,52 @@ public class MovieAgency {
 
                     if (!jsonObj.isNull("Title")) {
                         movies.add(jsonObj);
+                        String[] actors = jsonObj.get("Actors").toString().split(", ");
+                        String director = jsonObj.get("Director").toString();
+                        String writer = jsonObj.get("Writer").toString();
+
+                        crew.addAll(Arrays.asList(actors));
+
+                        for (String actor : actors) {
+                            crew.add(actor.replace(" ", "_"));
+                        }
+                        crew.add(director.replace(" ", "_"));
+                        crew.add(writer.replace(" ", "_"));
                     }
                 }
 
             }
         }
-
+        
+        parseWikipediaHTML(crew);
         return movies;
+
+    }
+
+    public static void parseWikipediaHTML(ArrayList<String> crewNames) throws IOException, XMLStreamException {
+
+        Document doc;
+
+        for (String crewName : crewNames) {
+            
+            System.out.println("CREWNAME: "+ crewName);
+            String wikipedia = "https://en.wikipedia.org/wiki/" + crewName;
+            doc = Jsoup.connect(wikipedia).get();
+
+            Element content = doc.getElementById("mw-content-text");
+            Elements nameclass = content.getElementsByClass("nickname");
+            Elements bdayclass = content.getElementsByClass("bday");
+            Elements ageclass = content.getElementsByClass("noprint");
+            String name = nameclass.text();
+            String bday = bdayclass.text();
+            String age = ageclass.text().substring(5, 7);
+            String bio = doc.select("div#mw-content-text> p").first().text();
+
+            ClientXMLGenerator gen = new ClientXMLGenerator();
+            gen.genCrewXMLFile(name, bday, age, bio);
+            
+            
+        }
 
     }
 

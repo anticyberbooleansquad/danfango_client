@@ -9,6 +9,7 @@ import XMLGenerator.ClientXMLGenerator;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -83,37 +84,43 @@ public class TheatreAgency {
 
     }
 
-    public ArrayList<JSONObject> getShowingsForTheatre() throws IOException, XMLStreamException {
+    public ArrayList<JSONObject> getShowingsForTheatre(String date) throws IOException, XMLStreamException, InterruptedException {
 
         ArrayList<String> theatreIds = getTheatreIds();
         ArrayList<JSONObject> movies = new ArrayList();
-        
-        
+
         theatreIds = new ArrayList<String>();
         theatreIds.add("2935");
         theatreIds.add("7587");
         theatreIds.add("9692");
-
+        theatreIds.add("5981");
         for (String id : theatreIds) {
-            
-            
-            URL theatreAPI = new URL("https://data.tmsapi.com/v1.1/theatres/"+id+"/showings?startDate=2017-04-14&api_key=7k72q6prdt4z44t764r3jw7t");
-            
-            try (BufferedReader in = new BufferedReader(new InputStreamReader(theatreAPI.openStream()))) {
-                String inputLine = in.readLine();
-                JSONArray jsonArray = null;
-                if (inputLine != null) {
-                    System.out.println(inputLine);
-                    jsonArray = new JSONArray(inputLine);
+            Thread.sleep(1000);
 
-                    
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject jsonObj = jsonArray.getJSONObject(i);
-                        movies.add(jsonObj);
+            URL theatreAPI = new URL("https://data.tmsapi.com/v1.1/theatres/" + id + "/showings?startDate=" + date + "&api_key=7k72q6prdt4z44t764r3jw7t");
+            HttpURLConnection connection = (HttpURLConnection) theatreAPI.openConnection();
+            connection.setRequestMethod("GET");
+            connection.connect();
+
+            int code = connection.getResponseCode();
+            System.out.println("CODE for " + id + " " + code);
+
+            if (code != 403) {
+                try (BufferedReader in = new BufferedReader(new InputStreamReader(theatreAPI.openStream()))) {
+                    String inputLine = in.readLine();
+                    JSONArray jsonArray = null;
+                    if (inputLine != null) {
+                        System.out.println("Theatre " + id + " " + inputLine);
+                        jsonArray = new JSONArray(inputLine);
+
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject jsonObj = jsonArray.getJSONObject(i);
+                            movies.add(jsonObj);
+                        }
+
                     }
 
                 }
-
             }
         }
 
