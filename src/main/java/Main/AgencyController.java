@@ -16,6 +16,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.HashSet;
+import java.util.Iterator;
 import javax.xml.stream.XMLStreamException;
 import org.json.JSONObject;
 
@@ -48,17 +50,45 @@ public class AgencyController {
         for(JSONObject movie: movies){
             as.updateActorsByMovie(movie);
         }
-       
-        // now that we have updated/created all of the actor objects in the "database" that we're interested in, let's retrieve them
-        ArrayList<Actor> actors = new ArrayList();
-        for(JSONObject movie: movies){
-            String movieId = movie.get("imdbId").toString();
-            Actor actor = as.getActorByMovieId(movieId);
-            actors.add(actor);
+        ArrayList<Actor> ourDatabaseActors = as.getActors();
+        System.out.println(Arrays.toString(ourDatabaseActors.toArray()));
+
+         // now that we have updated/created all of the actor objects in the "database" that we're interested in, let's retrieve them
+        HashSet<Actor> actors = new HashSet();
+//        for(JSONObject movie: movies){
+//            String movieId = movie.get("imdbID").toString();
+//            ArrayList<Actor> actorsInThisMovie = as.getActorsByMovieId(movieId);
+//            actors.addAll(actorsInThisMovie);
+//        }
+//        
+        //actors.addAll(as.getActors());
+//        ArrayList<Actor> ourDatabaseActors = as.getActors();
+//        System.out.println(Arrays.toString(ourDatabaseActors.toArray()));
+
+        for(Actor a: ourDatabaseActors){
+            actors.add(a);
+            System.out.println("Added actor: " + a.getName());
         }
-        // call the xml method here VVVV
+
+       Iterator iter = actors.iterator();
        
+//       System.out.println("WE'RE ABOUT TO PRINT THE LIST BABBBBY");
+       while(iter.hasNext()){
+           Actor myActor = (Actor)iter.next();
+           System.out.println("Actors name is: " + myActor.getName());
+       }
+//       System.out.println("WE FINISHED PRINTING THE LIST BAAAAAAAAAAAAAAAAAAAABY");
+       generator.genCrewXMLFile(actors);
         
+       
+       
+
+
+
+
+
+
+
         ///////////// THEATRES  ///////////////
         
         

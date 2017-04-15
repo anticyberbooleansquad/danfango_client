@@ -24,10 +24,29 @@ public class Actor {
             movieIds = new ArrayList();
         }
         
-        public Actor(String name){
-            this.name = name;
-            movieIds = new ArrayList();
-        }
+        
+//        @Override
+//    public boolean equals(Object o){
+//        if(this == o){
+//            return true;
+//        }
+//        if(!(o instanceof Actor)){
+//            return false;
+//        }
+//        
+//        Actor actor = (Actor) o;
+//        return actor.name.equals(name) && actor.birthDate.equals(birthDate) && actor.age.equals(age) && actor.biography.equals(biography);
+//    }    
+//    
+//    @Override
+//    public int hashCode(){
+//        int result = 1;
+//        result = result * name.hashCode();
+//        result = result * birthDate.hashCode();
+//        result = result * age.hashCode();
+//        result = result * biography.hashCode();
+//        return result;
+//    }
 
     /**
      * @return the name

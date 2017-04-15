@@ -1,5 +1,7 @@
-/Users/johnlegutko/Documents/CSE308_Danfango/danfango_client/src/main/java/TheatreAgency/TheatreAgency.java
-/Users/johnlegutko/Documents/CSE308_Danfango/danfango_client/src/main/java/MovieAgency/MovieAgency.java
-/Users/johnlegutko/Documents/CSE308_Danfango/danfango_client/src/main/java/MovieAgency/MoviePush.java
-/Users/johnlegutko/Documents/CSE308_Danfango/danfango_client/src/main/java/Main/AgencyController.java
-/Users/johnlegutko/Documents/CSE308_Danfango/danfango_client/src/main/java/XMLGenerator/ClientXMLGenerator.java
+/home/konrad/Documents/cse308/danfango_client/src/main/java/TheatreAgency/TheatreAgency.java
+/home/konrad/Documents/cse308/danfango_client/src/main/java/MovieAgency/MovieAgency.java
+/home/konrad/Documents/cse308/danfango_client/src/main/java/CrewAgency/CrewAgency.java
+/home/konrad/Documents/cse308/danfango_client/src/main/java/Main/AgencyController.java
+/home/konrad/Documents/cse308/danfango_client/src/main/java/XMLGenerator/ClientXMLGenerator.java
+/home/konrad/Documents/cse308/danfango_client/src/main/java/CrewAgency/Actor.java
+/home/konrad/Documents/cse308/danfango_client/src/main/java/MovieAgency/MoviePush.java
