@@ -107,12 +107,12 @@ public class CrewAgency {
            if (statusCode != 404) {
                doc = Jsoup.connect(wikipedia).get();
                Element content = doc.getElementById("mw-content-text");
-               Elements nameclass = content.getElementsByClass("nickname");
+               Elements nameclass = content.getElementsByClass("fn");
                Elements bdayclass = content.getElementsByClass("bday");
                Elements ageclass = content.getElementsByClass("noprint");
 
-               if (!nameclass.toString().equals("") && !bdayclass.toString().equals("") && !ageclass.toString().equals("")) {
-                   String name = nameclass.text();
+               if ((nameclass != null && !nameclass.toString().equals("")) && !bdayclass.toString().equals("") && !ageclass.toString().equals("")) {
+                   String name = nameclass.first().text();
                    //String name = doc.select("div.heading-holder >h1").first().text();
                    String bday = bdayclass.text();
                    String bdayYear = bday.substring(0, 4);
