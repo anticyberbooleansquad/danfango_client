@@ -15,17 +15,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.net.*;
 import java.io.*;
+import java.util.Calendar;
 import javax.xml.stream.XMLStreamException;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.jsoup.Connection;
 
 /**
  *
  * @author johnlegutko
  */
 public class MovieAgency {
-    
-    private static ArrayList<String> crewMembers;
 
     public ArrayList<JSONObject> getMovies() throws IOException, XMLStreamException {
         Document doc;
@@ -53,11 +53,11 @@ public class MovieAgency {
      * @throws IOException
      * @throws XMLStreamException 
      */
+
     public static ArrayList<JSONObject> parseImdbHTML(Document doc) throws IOException, XMLStreamException {
         ArrayList<String> hrefs = new ArrayList();
         ArrayList<String> imdbids = new ArrayList();
         ArrayList<JSONObject> movies = new ArrayList();
-        
 
         Elements movieTitles = doc.select("div.col-title > span > span > a");
 
@@ -72,7 +72,6 @@ public class MovieAgency {
 
         // at this point we have all of the imdb movie ids in the list 
         // now need to look them up using omdbapi 
-        
         for (String id : imdbids) {
             URL omdb = new URL("http://www.omdbapi.com/?i=" + id);
             try (BufferedReader in = new BufferedReader(new InputStreamReader(omdb.openStream()))) {
@@ -84,12 +83,15 @@ public class MovieAgency {
 
                     if (!jsonObj.isNull("Title")) {
                         movies.add(jsonObj);
+
                     }
                 }
 
             }
         }
+
         return movies;
     }
+
     
 }
