@@ -49,7 +49,6 @@ public class MovieAgency {
         ArrayList<String> hrefs = new ArrayList();
         ArrayList<String> imdbids = new ArrayList();
         ArrayList<JSONObject> movies = new ArrayList();
-        ArrayList<String> crew = new ArrayList();
 
         Elements movieTitles = doc.select("div.col-title > span > span > a");
 
@@ -62,7 +61,8 @@ public class MovieAgency {
             imdbids.add(id);
         }
 
-        //System.out.println(Arrays.toString(imdbids.toArray()));
+        // at this point we have all of the imdb movie ids in the list 
+        // now need to look them up using omdbapi 
         for (String id : imdbids) {
             URL omdb = new URL("http://www.omdbapi.com/?i=" + id);
             try (BufferedReader in = new BufferedReader(new InputStreamReader(omdb.openStream()))) {
@@ -74,21 +74,6 @@ public class MovieAgency {
 
                     if (!jsonObj.isNull("Title")) {
                         movies.add(jsonObj);
-                        String[] actors = jsonObj.get("Actors").toString().split(", ");
-                        String[] directors = jsonObj.get("Director").toString().split(", ");
-                        String[] writers = jsonObj.get("Writer").toString().split(", ");
-
-                        for (String actor : actors) {
-                            crew.add(actor.replace(" ", "_"));
-                        }
-
-//                        for (String director : directors) {
-//                            crew.add(director.replace(" ", "_"));
-//                        }
-
-//                        for (String writer : writers) {
-//                            crew.add(writer.replace(" ", "_"));
-//                        }
 
                     }
                 }
@@ -96,55 +81,7 @@ public class MovieAgency {
             }
         }
 
-        parseWikipediaHTML(crew);
         return movies;
-
-    }
-
-    public static void parseWikipediaHTML(ArrayList<String> crewNames) throws IOException, XMLStreamException {
-
-        Document doc;
-        int year = Calendar.getInstance().get(Calendar.YEAR);
-        
-        for (String crewName : crewNames) {
-
-            System.out.println("CREWNAME: " + crewName);
-            String wikipedia = "https://en.wikipedia.org/wiki/" + crewName;
-
-            Connection.Response response = Jsoup.connect(wikipedia)
-                    .userAgent("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/535.21 (KHTML, like Gecko) Chrome/19.0.1042.0 Safari/535.21")
-                    .timeout(10000)
-                    .ignoreHttpErrors(true)
-                    .execute();
-
-            int statusCode = response.statusCode();
-//            System.out.println("CODE: " + statusCode);
-
-            if (statusCode != 404) {
-                doc = Jsoup.connect(wikipedia).get();
-                Element content = doc.getElementById("mw-content-text");
-               System.out.println("CONTNET:" + content);
-
-                Elements nameclass = content.getElementsByClass("fn");
-                Elements bdayclass = content.getElementsByClass("bday");
-                Elements ageclass = content.getElementsByClass("noprint");
-
-                if ((nameclass != null && !nameclass.toString().equals("")) && !bdayclass.toString().equals("") && !ageclass.toString().equals("")) {
-                    String name = nameclass.first().text();
-                    //String name = doc.select("div.heading-holder >h1").first().text();
-                    String bday = bdayclass.text();
-                    String bdayYear = bday.substring(0, 4);
-                    int ageNum = year-Integer.parseInt(bdayYear);
-                    String age = Integer.toString(ageNum);
-                    String bio = doc.select("div#mw-content-text> p").first().text();
-
-                    ClientXMLGenerator gen = new ClientXMLGenerator();
-                    gen.genCrewXMLFile(name, bday, age, bio);
-                }
-
-            }
-        }
-
     }
 
 }

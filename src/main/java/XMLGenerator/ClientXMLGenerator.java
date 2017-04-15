@@ -9,10 +9,13 @@ package XMLGenerator;
  *
  * @author johnlegutko
  */
+import CrewAgency.Actor;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
@@ -237,7 +240,9 @@ public class ClientXMLGenerator {
 
     }
 
-    public void genCrewXMLFile(String name, String dob, String age, String bio) throws XMLStreamException, IOException {
+    public void genCrewXMLFile(HashSet<Actor> actors) throws XMLStreamException, IOException {
+        Iterator iter = actors.iterator();
+
         StringWriter stringWriter = new StringWriter();
 
         XMLOutputFactory xMLOutputFactory = XMLOutputFactory.newInstance();
@@ -246,27 +251,43 @@ public class ClientXMLGenerator {
         xMLStreamWriter.writeStartDocument();
         xMLStreamWriter.writeStartElement("actors"); //start outer movies
 
-        xMLStreamWriter.writeStartElement("actor");
+        while (iter.hasNext()) {
+            Actor actor = (Actor) iter.next();
+            String name = actor.getName();
+            String dob = actor.getBirthDate();
+            String age = actor.getAge();
+            String bio = actor.getBiography();
+            ArrayList<String> imdbIDs = actor.getMovieIds();
 
-        xMLStreamWriter.writeStartElement("name");
-        xMLStreamWriter.writeCharacters(name);
-        xMLStreamWriter.writeEndElement();
+            xMLStreamWriter.writeStartElement("actor");
 
-        xMLStreamWriter.writeStartElement("birthday");
-        xMLStreamWriter.writeCharacters(dob);
-        xMLStreamWriter.writeEndElement();
+            xMLStreamWriter.writeStartElement("name");
+            xMLStreamWriter.writeCharacters(name);
+            xMLStreamWriter.writeEndElement();
 
-        xMLStreamWriter.writeStartElement("age");
-        xMLStreamWriter.writeCharacters(age);
-        xMLStreamWriter.writeEndElement();
+            xMLStreamWriter.writeStartElement("birthday");
+            xMLStreamWriter.writeCharacters(dob);
+            xMLStreamWriter.writeEndElement();
 
-        xMLStreamWriter.writeStartElement("biography");
-        xMLStreamWriter.writeCharacters(bio);
-        xMLStreamWriter.writeEndElement();
+            xMLStreamWriter.writeStartElement("age");
+            xMLStreamWriter.writeCharacters(age);
+            xMLStreamWriter.writeEndElement();
 
-        ///////////
-        xMLStreamWriter.writeEndElement();
+            xMLStreamWriter.writeStartElement("biography");
+            xMLStreamWriter.writeCharacters(bio);
+            xMLStreamWriter.writeEndElement();
 
+            xMLStreamWriter.writeStartElement("movies");
+            for (String id : imdbIDs) {
+                xMLStreamWriter.writeStartElement("movie");
+                xMLStreamWriter.writeCharacters(id);
+                xMLStreamWriter.writeEndElement();
+            }
+            xMLStreamWriter.writeEndElement();
+
+            ///////////
+            xMLStreamWriter.writeEndElement();
+        }
         xMLStreamWriter.writeEndElement(); //end outer actors
 
         xMLStreamWriter.writeEndDocument();

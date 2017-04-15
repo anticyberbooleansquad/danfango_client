@@ -5,6 +5,8 @@
  */
 package Main;
 
+import CrewAgency.CrewAgency;
+import CrewAgency.Actor;
 import MovieAgency.MoviePush;
 import MovieAgency.MovieAgency;
 import TheatreAgency.TheatreAgency;
@@ -14,6 +16,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.HashSet;
+import java.util.Iterator;
 import javax.xml.stream.XMLStreamException;
 import org.json.JSONObject;
 
@@ -35,19 +39,36 @@ public class AgencyController {
 
         ClientXMLGenerator generator = new ClientXMLGenerator();
 
+        ///////////// MOVIES ///////////////
         MovieAgency ms = new MovieAgency();
         ArrayList<JSONObject> movies = ms.getMovies();
         generator.genMovieXMLFile(movies);
 
-        TheatreAgency ts = new TheatreAgency();
+        ///////////// ACTORS ///////////////
+        CrewAgency as = new CrewAgency();
+        for (JSONObject movie : movies) {
+            as.updateActorsByMovie(movie);
+        }
+        ArrayList<Actor> ourDatabaseActors = as.getActors();
+        System.out.println(Arrays.toString(ourDatabaseActors.toArray()));
+
+        // now that we have updated/created all of the actor objects in the "database" that we're interested in, let's retrieve them
+        HashSet<Actor> actors = new HashSet();
+        for (Actor a : ourDatabaseActors) {
+            actors.add(a);
+            System.out.println("Added actor: " + a.getName());
+        }
+
+        generator.genCrewXMLFile(actors);
+
+        ///////////// THEATRES  ///////////////
+        ///////////// SHOWINGS ///////////////
+        //TheatreAgency ts = new TheatreAgency();
         //ArrayList<JSONObject> theatres = ts.getTheatres();
         //ArrayList<JSONObject> showings = ts.getShowingsForTheatre(formattedDate);
-
         //generator.genTheatreXMLFile(theatres);
         //generator.genShowingXMLFile(showings);
         //System.out.println(Arrays.toString(showings.toArray()));
-        
-
     }
 
 }
