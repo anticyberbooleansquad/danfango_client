@@ -44,20 +44,6 @@ public class MovieAgency {
         return movies;
 
     }
-
-//    public ArrayList<JSONObject> getCrewInfo(String crewName) throws IOException, XMLStreamException {
-//        Document doc;
-//        ArrayList<JSONObject> crew;
-//        String wikipedia = "https://en.wikipedia.org/wiki/Robert_Downey_Jr.";
-//        
-//        doc = Jsoup.connect(wikipedia).get();
-//        crew = parseWikipediaHTML(doc);
-//
-//        return crew;
-//
-//    }
-    
-    
     
     /**
      * This method takes in an imdb popular movie page doc and uses the omdb api to return 
@@ -106,22 +92,4 @@ public class MovieAgency {
         return movies;
     }
     
-//    public ArrayList<String> getCrewMemberNames (JSONObject movie){
-//        ArrayList<String> crewMemberNames = new ArrayList();
-//        String[] actorNames = movie.get("Actors").toString().split(", ");
-//        String directorName = movie.get("Director").toString();
-//        String writerName = movie.get("Writer").toString();
-//        
-//        crewMemberNames.add(directorName);
-//        crewMemberNames.add(writerName);
-//        for(String actorName: actorNames){
-//            crewMemberNames.add(actorName);
-//        }
-//        return crewMemberNames;
-//    }
-    
-    
-
-    
-
 }
