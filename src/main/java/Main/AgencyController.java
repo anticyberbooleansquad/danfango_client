@@ -19,6 +19,7 @@ import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Iterator;
 import javax.xml.stream.XMLStreamException;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
@@ -26,24 +27,23 @@ import org.json.JSONObject;
  * @author johnlegutko
  */
 public class AgencyController {
-
+    
     public static void main(String[] args) throws IOException, XMLStreamException, InterruptedException {
         System.setProperty("http.agent", "Chrome");
-
+        
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, 1);
         SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
-
+        
         String formattedDate = format1.format(cal.getTime());
         System.out.println("TODAYS DATE: " + formattedDate);
-
+        
         ClientXMLGenerator generator = new ClientXMLGenerator();
 
         ///////////// MOVIES ///////////////
 //        MovieAgency ms = new MovieAgency();
 //        ArrayList<JSONObject> movies = ms.getMovies();
         //generator.genMovieXMLFile(movies);
-
         ///////////// ACTORS ///////////////
 //        CrewAgency as = new CrewAgency();
 //        for (JSONObject movie : movies) {
@@ -57,18 +57,18 @@ public class AgencyController {
 //            actors.add(a);
 //            System.out.println("Added actor: " + a.getName());
 //        }
-
         //generator.genCrewXMLFile(actors);
-
         ///////////// THEATRES  ///////////////
         TheatreAgency ts = new TheatreAgency();
         ArrayList<JSONObject> theatres = ts.getTheatres();
-        ///////////// SHOWINGS ///////////////
-        ArrayList<JSONObject> showings = ts.getShowingsForTheatres(formattedDate);
         generator.genTheatreXMLFile(theatres);
-        generator.genShowingXMLFile(showings);
-        //System.out.println(Arrays.toString(showings.toArray()));
+        
+        
+        ///////////// SHOWINGS ///////////////
+        ArrayList<JSONArray> theatreShowingsList = ts.getShowingsForTheatres(formattedDate);
 
+        generator.genShowingXMLFile(theatreShowingsList);
+         //System.out.println(Arrays.toString(theatreShowingsList.toArray()));
     }
-
+    
 }

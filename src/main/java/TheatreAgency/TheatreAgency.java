@@ -25,21 +25,24 @@ import org.jsoup.select.Elements;
  * @author johnlegutko
  */
 public class TheatreAgency {
+
     private ArrayList<String> theatreIds;
-    
-    public TheatreAgency(){
+
+    public TheatreAgency() {
         theatreIds = new ArrayList();
     }
-    
+
     /**
-     * Return list of JSONObject theatres using an API with radius of 100 of Lindenhurst, NY, 11757. 
+     * Return list of JSONObject theatres using an API with radius of 100 of
+     * Lindenhurst, NY, 11757.
+     *
      * @return
      * @throws IOException
-     * @throws XMLStreamException 
+     * @throws XMLStreamException
      */
     public ArrayList<JSONObject> getTheatres() throws IOException, XMLStreamException {
         ArrayList<JSONObject> theatres = new ArrayList();
-       
+
         URL theatreAPI = new URL("http://data.tmsapi.com/v1.1/theatres?zip=11757&radius=5&units=mi&numTheatres=1000&api_key=7k72q6prdt4z44t764r3jw7t");
         try (BufferedReader in = new BufferedReader(new InputStreamReader(theatreAPI.openStream()))) {
             String inputLine = in.readLine();
@@ -60,16 +63,10 @@ public class TheatreAgency {
         return theatres;
     }
 
+    public ArrayList<JSONArray> getShowingsForTheatres(String date) throws IOException, XMLStreamException, InterruptedException {
+        // each JSONArray is treated as "theatreShowings" --> contains all showing information for that particular theatre
+        ArrayList<JSONArray> theatreShowingsList = new ArrayList();
 
-    public ArrayList<JSONObject> getShowingsForTheatres(String date) throws IOException, XMLStreamException, InterruptedException {
-
-        ArrayList<JSONObject> movies = new ArrayList();
-
-//        theatreIds = new ArrayList<String>();
-//        theatreIds.add("2935");
-//        theatreIds.add("7587");
-//        theatreIds.add("9692");
-//        theatreIds.add("5981");
         for (String id : theatreIds) {
             Thread.sleep(500);
 
@@ -84,23 +81,19 @@ public class TheatreAgency {
             if (code != 403) {
                 try (BufferedReader in = new BufferedReader(new InputStreamReader(theatreAPI.openStream()))) {
                     String inputLine = in.readLine();
-                    JSONArray jsonArray = null;
+                    JSONArray theatreShowings = null;
                     if (inputLine != null) {
                         System.out.println("Theatre " + id + " " + inputLine);
-                        jsonArray = new JSONArray(inputLine);
-
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            JSONObject jsonObj = jsonArray.getJSONObject(i);
-                            movies.add(jsonObj);
+                        theatreShowings = new JSONArray(inputLine);
+                        if (theatreShowings.length() != 0) {
+                            theatreShowingsList.add(theatreShowings);
                         }
-
                     }
-
                 }
             }
         }
 
-        return movies;
+        return theatreShowingsList;
 
     }
 
