@@ -19,6 +19,7 @@ import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Iterator;
 import javax.xml.stream.XMLStreamException;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
@@ -70,10 +71,15 @@ public class AgencyController {
 
 
         ///////////// SHOWINGS ///////////////
-        ArrayList<JSONObject> showings = ts.getShowingsForTheatres(formattedDate);
+        ArrayList<JSONArray> theatreShowingsList = ts.getShowingsForTheatres(formattedDate);
+        
+//          for (int i = 0; i < jsonArray.length(); i++) {
+//                            JSONObject jsonObj = jsonArray.getJSONObject(i);
+//                            movies.add(jsonObj);
+//                        }
         
        //  generator.genShowingXMLFile(showings);
-        System.out.println(Arrays.toString(showings.toArray()));
+        // System.out.println(Arrays.toString(showings.toArray()));
     }
 
 }
