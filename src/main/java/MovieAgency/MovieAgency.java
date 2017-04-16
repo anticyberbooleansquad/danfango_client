@@ -87,7 +87,7 @@ public class MovieAgency {
                     }
                 }
 
-            }
+            }                
         }
 
         return movies;

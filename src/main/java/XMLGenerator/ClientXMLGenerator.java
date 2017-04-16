@@ -169,7 +169,12 @@ public class ClientXMLGenerator {
         fw.close();
 
     }
-
+    /**
+     * This method creates a single theatre-showing section on the showings xml
+     * @param movies
+     * @throws XMLStreamException
+     * @throws IOException 
+     */
     public void genShowingXMLFile(ArrayList<JSONObject> movies) throws XMLStreamException, IOException {
         StringWriter stringWriter = new StringWriter();
 
@@ -181,10 +186,6 @@ public class ClientXMLGenerator {
 
         for (int i = 0; i < movies.size(); i++) {
             JSONObject movie = movies.get(i);
-            if (movie.length() == 0) {
-                i++;
-                movie = movies.get(i);
-            }
 
             String moviename = movie.get("title").toString();
             int releaseYear = (int) movie.get("releaseYear");
