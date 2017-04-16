@@ -181,11 +181,7 @@ public class ClientXMLGenerator {
 
         for (int i = 0; i < movies.size(); i++) {
             JSONObject movie = movies.get(i);
-            if (movie.length() == 0) {
-                i++;
-                movie = movies.get(i);
-            }
-
+           
             String moviename = movie.get("title").toString();
             int releaseYear = (int) movie.get("releaseYear");
             String releaseDate = movie.get("releaseDate").toString();
@@ -204,7 +200,7 @@ public class ClientXMLGenerator {
             }
 
             for (int j = 0; j < showtimes.length(); j++) {
-                xMLStreamWriter.writeStartElement("showing");
+                xMLStreamWriter.writeStartElement("showtimes");
 
                 xMLStreamWriter.writeStartElement("moviename");
                 xMLStreamWriter.writeCharacters(moviename);

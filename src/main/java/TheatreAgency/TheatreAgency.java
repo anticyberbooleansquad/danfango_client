@@ -95,7 +95,7 @@ public class TheatreAgency {
         theatreIds.add("9692");
         theatreIds.add("5981");
         for (String id : theatreIds) {
-            Thread.sleep(1000);
+            Thread.sleep(500);
 
             URL theatreAPI = new URL("https://data.tmsapi.com/v1.1/theatres/" + id + "/showings?startDate=" + date + "&api_key=7k72q6prdt4z44t764r3jw7t");
             HttpURLConnection connection = (HttpURLConnection) theatreAPI.openConnection();

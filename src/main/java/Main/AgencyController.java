@@ -40,34 +40,33 @@ public class AgencyController {
         ClientXMLGenerator generator = new ClientXMLGenerator();
 
         ///////////// MOVIES ///////////////
-        MovieAgency ms = new MovieAgency();
-        ArrayList<JSONObject> movies = ms.getMovies();
-        generator.genMovieXMLFile(movies);
+//        MovieAgency ms = new MovieAgency();
+//        ArrayList<JSONObject> movies = ms.getMovies();
+        //generator.genMovieXMLFile(movies);
 
         ///////////// ACTORS ///////////////
-        CrewAgency as = new CrewAgency();
-        for (JSONObject movie : movies) {
-            as.updateActorsByMovie(movie);
-        }
-        ArrayList<Actor> ourDatabaseActors = as.getActors();
-        System.out.println(Arrays.toString(ourDatabaseActors.toArray()));
+//        CrewAgency as = new CrewAgency();
+//        for (JSONObject movie : movies) {
+//            as.updateActorsByMovie(movie);
+//        }
+//        ArrayList<Actor> ourDatabaseActors = as.getActors();
+//        System.out.println(Arrays.toString(ourDatabaseActors.toArray()));
+//
+//        HashSet<Actor> actors = new HashSet();
+//        for (Actor a : ourDatabaseActors) {
+//            actors.add(a);
+//            System.out.println("Added actor: " + a.getName());
+//        }
 
-        // now that we have updated/created all of the actor objects in the "database" that we're interested in, let's retrieve them
-        HashSet<Actor> actors = new HashSet();
-        for (Actor a : ourDatabaseActors) {
-            actors.add(a);
-            System.out.println("Added actor: " + a.getName());
-        }
-
-        generator.genCrewXMLFile(actors);
+        //generator.genCrewXMLFile(actors);
 
         ///////////// THEATRES  ///////////////
+        TheatreAgency ts = new TheatreAgency();
+        ArrayList<JSONObject> theatres = ts.getTheatres();
         ///////////// SHOWINGS ///////////////
-        //TheatreAgency ts = new TheatreAgency();
-        //ArrayList<JSONObject> theatres = ts.getTheatres();
-        //ArrayList<JSONObject> showings = ts.getShowingsForTheatre(formattedDate);
-        //generator.genTheatreXMLFile(theatres);
-        //generator.genShowingXMLFile(showings);
+        ArrayList<JSONObject> showings = ts.getShowingsForTheatre(formattedDate);
+        generator.genTheatreXMLFile(theatres);
+        generator.genShowingXMLFile(showings);
         //System.out.println(Arrays.toString(showings.toArray()));
     }
 
