@@ -64,10 +64,11 @@ public class AgencyController {
         TheatreAgency ts = new TheatreAgency();
         ArrayList<JSONObject> theatres = ts.getTheatres();
         ///////////// SHOWINGS ///////////////
-        ArrayList<JSONObject> showings = ts.getShowingsForTheatre(formattedDate);
+        ArrayList<JSONObject> showings = ts.getShowingsForTheatres(formattedDate);
         generator.genTheatreXMLFile(theatres);
         generator.genShowingXMLFile(showings);
         //System.out.println(Arrays.toString(showings.toArray()));
+
     }
 
 }

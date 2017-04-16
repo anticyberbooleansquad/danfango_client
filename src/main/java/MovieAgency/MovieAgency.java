@@ -44,6 +44,15 @@ public class MovieAgency {
         return movies;
 
     }
+    
+    /**
+     * This method takes in an imdb popular movie page doc and uses the omdb api to return 
+     * a list of movie JsonObjects
+     * @param doc
+     * @return
+     * @throws IOException
+     * @throws XMLStreamException 
+     */
 
     public static ArrayList<JSONObject> parseImdbHTML(Document doc) throws IOException, XMLStreamException {
         ArrayList<String> hrefs = new ArrayList();
@@ -78,10 +87,11 @@ public class MovieAgency {
                     }
                 }
 
-            }
+            }                
         }
 
         return movies;
     }
 
+    
 }
