@@ -32,17 +32,28 @@ public class MovieAgency {
         Document doc;
         ArrayList<JSONObject> movies;
         String year2016 = "http://www.imdb.com/search/title?year=2016,2016&title_type=feature&sort=moviemeter,asc&view=simple";
-        //String year2017 = "http://www.imdb.com/search/title?year=2017,2017&title_type=feature&sort=moviemeter,asc&view=simple";
-        //String year2018 = "http://www.imdb.com/search/title?year=2018,2018&title_type=feature&sort=moviemeter,asc&view=simple";
+        String year2017 = "http://www.imdb.com/search/title?year=2017,2017&title_type=feature&sort=moviemeter,asc&view=simple";
+        String year2018 = "http://www.imdb.com/search/title?year=2018,2018&title_type=feature&sort=moviemeter,asc&view=simple";
 
         doc = Jsoup.connect(year2016).get();
         movies = parseImdbHTML(doc);
-        //doc = Jsoup.connect(year2017).get();
-        //movies.addAll(parseImdbHTML(doc));
-        //doc = Jsoup.connect(year2018).get();
-        //movies.addAll(parseImdbHTML(doc));
+        doc = Jsoup.connect(year2017).get();
+        movies.addAll(parseImdbHTML(doc));
+        doc = Jsoup.connect(year2018).get();
+        
+//        movies = parseImdbHTML(doc);
+//        JSONObject j0 = movies.get(0);
+//        JSONObject j1 = movies.get(1);
+//        movies.clear();
+//        movies.add(j0);
+//        movies.add(j1);
 
+
+        movies.addAll(parseImdbHTML(doc));
+        
         return movies;
+        
+        // IMAGE LINK https://image.tmdb.org/t/p/w500 + poster.jpg
 
     }
 

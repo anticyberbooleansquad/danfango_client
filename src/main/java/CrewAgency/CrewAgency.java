@@ -14,6 +14,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 import javax.xml.stream.XMLStreamException;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -31,10 +34,12 @@ public class CrewAgency {
 
     private ArrayList<Actor> actors;
     private ArrayList<String> imdbids;
+    private ArrayList<String> tmdbids;
 
     public CrewAgency() {
         actors = new ArrayList();
         imdbids = new ArrayList();
+        tmdbids = new ArrayList();
     }
 
     public ArrayList<Actor> getActors() {
@@ -45,21 +50,54 @@ public class CrewAgency {
         return imdbids;
     }
 
-    public void getActorIMBDIdsByMovie(JSONObject movie) throws IOException, XMLStreamException, InterruptedException {
+    public ArrayList<String> getTmdbids() {
+        return tmdbids;
+    }
+
+    public void updateActorsByMovie(JSONObject movie) throws IOException, XMLStreamException, InterruptedException {
         Document doc;
-        String id = movie.get("imdb_id").toString();
-        String moviePage = "http://www.imdb.com/title/" + id + "/?ref_=adv_li_tt";
+        String movieId = movie.get("imdb_id").toString();
+        String moviePage = "http://www.imdb.com/title/" + movieId + "/?ref_=adv_li_tt";
 
-        System.out.println("AFTER CREATE LINK for ID: " + id);
-
+        //System.out.println("AFTER CREATE LINK for ID: " + id);
         doc = Jsoup.connect(moviePage).get();
-        ArrayList<String> actorIds = parseImdbHTML(doc);
-        System.out.println(Arrays.toString(actorIds.toArray()));
+        ArrayList<String> actorIdsTemp = parseImdbHTML(doc);
+        HashSet<String> actorIds = new HashSet();
+        for (String s : actorIdsTemp) {
+            actorIds.add(s);
+        }
+        //System.out.println(movie.get("title") + ": Actors " + Arrays.toString(actorIds.toArray()));
 
-        System.out.println("AFTER PARSE HTML");
+        Iterator<String> it = actorIds.iterator();
+        System.out.println("HASH SIZE: " + actorIds.size());
 
-        for (String s : actorIds) {
-            imdbids.add(s);
+        while (it.hasNext()) {
+            String imdbActorId = it.next();
+            Thread.sleep(200);
+            //System.out.println("IMDB: " + imdbActorId);
+            imdbids.add(imdbActorId);
+            String tmdbActorId = getTMDBId(imdbActorId);
+            //System.out.println("TMDB: " + tmdbActorId);
+            tmdbids.add(tmdbActorId);
+            // lets see if there is actor in actors "database" with this id already
+            // if there is simply retrieve this object and add this movieId to that actor object
+            // if there isn't we must:
+            // 1. create the actor
+            // 2. add this movieId to that actor object
+            // 3. add this actor object to the actors "database"
+            if (tmdbActorId != null) {
+                Actor actor = getActorByImdbId(imdbActorId);
+                if (actor == null) {
+                    actor = new Actor();
+                    actor.setImdbId(imdbActorId);
+                    actor.setTmdbId(tmdbActorId);
+                    updateActorTMDB(actor);
+                    actor.getMovieIds().add(movieId);
+                    actors.add(actor);
+                } else {
+                    actor.getMovieIds().add(movieId);
+                }
+            }
         }
 
     }
@@ -67,25 +105,18 @@ public class CrewAgency {
     public ArrayList<String> parseImdbHTML(Document doc) throws IOException, XMLStreamException, InterruptedException {
         ArrayList<String> hrefs = new ArrayList();
         ArrayList<String> actorIMDBIds = new ArrayList();
-
         Elements actorIds = doc.select("div#titleCast > table.cast_list > tbody > tr >td > a");
-        System.out.println("ELEMENT: " + actorIds);
-
         for (Element e : actorIds) {
-            System.out.println("HREF: " + e.attr("href"));
             hrefs.add(e.attr("href"));
         }
-
         for (String s : hrefs) {
             String id = s.substring(6, 15);
-            System.out.println("ID: " + id);
             actorIMDBIds.add(id);
         }
-
         return actorIMDBIds;
     }
 
-    public String getTMDBIds(String imdbid) throws IOException {
+    public String getTMDBId(String imdbid) throws IOException, InterruptedException {
 
         String tmdbid = null;
         URL tmdbActor = new URL("https://api.themoviedb.org/3/find/" + imdbid + "?api_key=0910d4231d712cc65022c17dc1da4a68&language=en-US&external_source=imdb_id");
@@ -103,58 +134,70 @@ public class CrewAgency {
             }
 
         }
+
         return tmdbid;
 
     }
 
-    public JSONObject getActorDetails(String tmdbid) throws IOException {
-
-        JSONObject actor = null;
-        URL tmdbActor = new URL("https://api.themoviedb.org/3/person/" + tmdbid + "?api_key=0910d4231d712cc65022c17dc1da4a68&language=en-US");
+    public void updateActorTMDB(Actor actor) throws IOException, InterruptedException {
+        System.out.println("ACTORID: "+ actor.getTmdbId());
+        int year = Calendar.getInstance().get(Calendar.YEAR);
+        Thread.sleep(500);
+        String tmdbId = actor.getTmdbId();
+        JSONObject jsonActor = null;
+        URL tmdbActor = new URL("https://api.themoviedb.org/3/person/" + tmdbId + "?api_key=0910d4231d712cc65022c17dc1da4a68&language=en-US");
         try (BufferedReader in = new BufferedReader(new InputStreamReader(tmdbActor.openStream()))) {
             String inputLine = in.readLine();
             if (inputLine != null) {
-                actor = new JSONObject(inputLine);
-            }
+                jsonActor = new JSONObject(inputLine);
 
-        }
-        return actor;
+             
+              
+                if (!jsonActor.isNull("name")) {
+                    String name = jsonActor.getString("name");
+                    actor.setName(name);
 
-    }
+                }
+                if (!jsonActor.isNull("birthday")) {
+                    String birthdate = jsonActor.getString("birthday");
+                    String bdayYear = birthdate;
+                    if (bdayYear.length() > 0) {
+                        bdayYear = bdayYear.substring(0, 4);
+                        int ageNum = year - Integer.parseInt(bdayYear);
+                        String age = Integer.toString(ageNum);
+                        actor.setAge(age);
+                    }
+                    actor.setBirthDate(birthdate);
 
-    public void updateActorsByMovie(JSONObject movie) throws IOException, XMLStreamException {
+                }
+                if (!jsonActor.isNull("biography")) {
+                    String biography = jsonActor.getString("biography");
+                    actor.setBiography(biography);
 
-        String movieId = movie.get("imdbID").toString();
+                }
+                if (!jsonActor.isNull("profile_path")) {
+                    String profile_path = jsonActor.getString("profile_path");
+                    actor.setPoster(profile_path);
 
-        ArrayList<String> crewMemberNames = new ArrayList();
-        String[] actorNames = movie.get("Actors").toString().split(", ");
-        String directorName = movie.get("Director").toString();
-        String writerName = movie.get("Writer").toString();
+                }
 
-        crewMemberNames.addAll(Arrays.asList(actorNames));
-        //  crewMemberNames.add(directorName);
-        //  crewMemberNames.add(writerName);
-
-        for (String name : crewMemberNames) {
-            Actor actor = getActorByName(name);
-            // if the actor doesn't exist yet, we must create the java object, pull wikipedia info, and add it to the list
-            if (actor == null) {
-                actor = new Actor();
-                actor.setName(name);
-                // TODO -  will have to add a try catch at this line later rather than just throwing the exceptions above
-                updateActorWikipedia(actor);
-                actor.getMovieIds().add(movieId);
-                actors.add(actor);
-            } // if actor already exists in the database, simply add the movieId to his list of movies
-            else {
-                actor.getMovieIds().add(movieId);
             }
         }
+
     }
 
     public Actor getActorByName(String name) {
         for (Actor a : actors) {
             if (a.getName() != null && a.getName().equals(name)) {
+                return a;
+            }
+        }
+        return null;
+    }
+
+    public Actor getActorByImdbId(String id) {
+        for (Actor a : actors) {
+            if (a.getImdbId() != null && a.getImdbId().equals(id)) {
                 return a;
             }
         }

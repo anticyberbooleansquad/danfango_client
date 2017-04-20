@@ -287,6 +287,8 @@ public class ClientXMLGenerator {
             String dob = actor.getBirthDate();
             String age = actor.getAge();
             String bio = actor.getBiography();
+            String poster = actor.getPoster();
+
             ArrayList<String> imdbIDs = actor.getMovieIds();
 
             xMLStreamWriter.writeStartElement("actor");
@@ -305,6 +307,10 @@ public class ClientXMLGenerator {
 
             xMLStreamWriter.writeStartElement("biography");
             xMLStreamWriter.writeCharacters(bio);
+            xMLStreamWriter.writeEndElement();
+            
+            xMLStreamWriter.writeStartElement("poster");
+            xMLStreamWriter.writeCharacters(poster);
             xMLStreamWriter.writeEndElement();
 
             xMLStreamWriter.writeStartElement("movies");
@@ -328,7 +334,7 @@ public class ClientXMLGenerator {
         stringWriter.close();
         System.out.println(xmlString);
 
-        FileWriter fw = new FileWriter("actorAgency.xml");
+        FileWriter fw = new FileWriter("actorAgency2.xml");
         fw.write(xmlString);
         fw.close();
 
