@@ -38,55 +38,80 @@ public class ClientXMLGenerator {
             xMLStreamWriter.writeStartElement("movie");
 
             xMLStreamWriter.writeStartElement("title");
-            xMLStreamWriter.writeCharacters(movie.get("Title").toString());
-            xMLStreamWriter.writeEndElement();
-
-            xMLStreamWriter.writeStartElement("year");
-            xMLStreamWriter.writeCharacters(movie.get("Year").toString());
+            xMLStreamWriter.writeCharacters(movie.get("title").toString());
             xMLStreamWriter.writeEndElement();
 
             xMLStreamWriter.writeStartElement("rated");
-            xMLStreamWriter.writeCharacters(movie.get("Rated").toString());
+            xMLStreamWriter.writeCharacters(movie.get("rated").toString());
             xMLStreamWriter.writeEndElement();
 
             xMLStreamWriter.writeStartElement("released");
-            xMLStreamWriter.writeCharacters(movie.get("Released").toString());
+            xMLStreamWriter.writeCharacters(movie.get("release_date").toString());
+            xMLStreamWriter.writeEndElement();
+
+            xMLStreamWriter.writeStartElement("tmbdID");
+            xMLStreamWriter.writeCharacters(movie.get("id").toString());
             xMLStreamWriter.writeEndElement();
 
             xMLStreamWriter.writeStartElement("imdbID");
-            xMLStreamWriter.writeCharacters(movie.get("imdbID").toString());
+            xMLStreamWriter.writeCharacters(movie.get("imdb_id").toString());
             xMLStreamWriter.writeEndElement();
 
             xMLStreamWriter.writeStartElement("imdbRating");
-            xMLStreamWriter.writeCharacters(movie.get("imdbRating").toString());
+            xMLStreamWriter.writeCharacters(movie.get("vote_average").toString());
             xMLStreamWriter.writeEndElement();
 
             xMLStreamWriter.writeStartElement("genre");
-            xMLStreamWriter.writeCharacters(movie.get("Genre").toString());
+            xMLStreamWriter.writeCharacters(movie.get("genre").toString());
             xMLStreamWriter.writeEndElement();
 
             xMLStreamWriter.writeStartElement("plot");
-            xMLStreamWriter.writeCharacters(movie.get("Plot").toString());
+            xMLStreamWriter.writeCharacters(movie.get("overview").toString());
             xMLStreamWriter.writeEndElement();
 
             xMLStreamWriter.writeStartElement("poster");
-            xMLStreamWriter.writeCharacters(movie.get("Poster").toString());
+            xMLStreamWriter.writeCharacters(movie.get("poster_path").toString());
+            xMLStreamWriter.writeEndElement();
+
+            xMLStreamWriter.writeStartElement("backdrop");
+            xMLStreamWriter.writeCharacters(movie.get("backdrop_path").toString());
             xMLStreamWriter.writeEndElement();
 
             xMLStreamWriter.writeStartElement("runtime");
-            xMLStreamWriter.writeCharacters(movie.get("Runtime").toString());
+            xMLStreamWriter.writeCharacters(movie.get("runtime").toString());
             xMLStreamWriter.writeEndElement();
 
             xMLStreamWriter.writeStartElement("actors");
-            xMLStreamWriter.writeCharacters(movie.get("Actors").toString());
+            xMLStreamWriter.writeCharacters(movie.get("actors").toString());
             xMLStreamWriter.writeEndElement();
 
             xMLStreamWriter.writeStartElement("director");
-            xMLStreamWriter.writeCharacters(movie.get("Director").toString());
+            xMLStreamWriter.writeCharacters(movie.get("director").toString());
             xMLStreamWriter.writeEndElement();
 
             xMLStreamWriter.writeStartElement("writer");
-            xMLStreamWriter.writeCharacters(movie.get("Writer").toString());
+            xMLStreamWriter.writeCharacters(movie.get("writer").toString());
+            xMLStreamWriter.writeEndElement();
+
+            xMLStreamWriter.writeStartElement("trailers");
+
+            JSONArray trailers = movie.getJSONArray("results");
+            for (int i = 0; i < trailers.length(); i++) {
+                JSONObject video = (JSONObject) trailers.get(i);
+
+                xMLStreamWriter.writeStartElement("trailer");
+
+                xMLStreamWriter.writeStartElement("id");
+                xMLStreamWriter.writeCharacters(video.getString("id"));
+                xMLStreamWriter.writeEndElement();
+
+                xMLStreamWriter.writeStartElement("key");
+                xMLStreamWriter.writeCharacters(video.getString("key"));
+                xMLStreamWriter.writeEndElement();
+
+                xMLStreamWriter.writeEndElement();
+
+            }
             xMLStreamWriter.writeEndElement();
 
             xMLStreamWriter.writeEndElement();
@@ -103,7 +128,7 @@ public class ClientXMLGenerator {
         stringWriter.close();
         System.out.println(xmlString);
 
-        FileWriter fw = new FileWriter("movieAgency.xml");
+        FileWriter fw = new FileWriter("movieAgency3.xml");
         fw.write(xmlString);
         fw.close();
 
@@ -193,11 +218,11 @@ public class ClientXMLGenerator {
 
                 JSONObject movie = (JSONObject) theatreShowings.get(j);
                 String moviename = movie.get("title").toString();
-                int releaseYear = (int) movie.get("releaseYear");
-                String releaseDate = movie.get("releaseDate").toString();
-                
+                //int releaseYear = (int) movie.get("releaseYear");
+                //String releaseDate = movie.get("releaseDate").toString();
+
                 JSONArray showtimes = movie.getJSONArray("showtimes");
-                
+
                 if (j == 0) {
                     JSONObject showing = (JSONObject) showtimes.get(0);
                     JSONObject theatreObj = showing.getJSONObject("theatre");
@@ -206,14 +231,12 @@ public class ClientXMLGenerator {
 
                     xMLStreamWriter.writeStartElement("theatre");
                     xMLStreamWriter.writeAttribute("id", theatreId);
-                    xMLStreamWriter.writeAttribute("name", theatreName);  
+                    xMLStreamWriter.writeAttribute("name", theatreName);
                 }
-                
-                
-                
-                for(int k = 0; k < showtimes.length(); k++){
+
+                for (int k = 0; k < showtimes.length(); k++) {
                     xMLStreamWriter.writeStartElement("showtime");
-                    
+
                     xMLStreamWriter.writeStartElement("moviename");
                     xMLStreamWriter.writeCharacters(moviename);
                     xMLStreamWriter.writeEndElement();
@@ -222,18 +245,17 @@ public class ClientXMLGenerator {
                     JSONObject datetime = (JSONObject) showtimes.get(k);
                     xMLStreamWriter.writeCharacters(datetime.get("dateTime").toString());
                     xMLStreamWriter.writeEndElement();
-                    
+
                     xMLStreamWriter.writeEndElement(); //close showtime    
                 }
                 // next moving on to next movie object
             }
             //close with theatre tag because looped through all movies and listed all showtimes for each movie
             xMLStreamWriter.writeEndElement(); //close theatre
-             
+
         }
         xMLStreamWriter.writeEndElement(); //close showings
 
-        
         xMLStreamWriter.writeEndDocument();
         xMLStreamWriter.flush();
         xMLStreamWriter.close();

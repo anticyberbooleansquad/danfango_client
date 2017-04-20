@@ -41,34 +41,45 @@ public class AgencyController {
         ClientXMLGenerator generator = new ClientXMLGenerator();
 
         ///////////// MOVIES ///////////////
-//        MovieAgency ms = new MovieAgency();
-//        ArrayList<JSONObject> movies = ms.getMovies();
-        //generator.genMovieXMLFile(movies);
-        ///////////// ACTORS ///////////////
+        MovieAgency ms = new MovieAgency();
+        ArrayList<JSONObject> movies = ms.getMovies();
+        System.out.println(Arrays.toString(movies.toArray()));
+
+        System.out.println("STARTING MOVIE PARSE");
+        generator.genMovieXMLFile(movies);
+//        ///////////// ACTORS ///////////////
+        CrewAgency as = new CrewAgency();
+        for (JSONObject movie : movies) {
+            as.getActorIMBDIdsByMovie(movie);
+        }
+        
+        System.out.println(Arrays.toString(as.getImdbids().toArray()));
+
+
 //        CrewAgency as = new CrewAgency();
 //        for (JSONObject movie : movies) {
 //            as.updateActorsByMovie(movie);
 //        }
 //        ArrayList<Actor> ourDatabaseActors = as.getActors();
-//        System.out.println(Arrays.toString(ourDatabaseActors.toArray()));
-//
 //        HashSet<Actor> actors = new HashSet();
 //        for (Actor a : ourDatabaseActors) {
 //            actors.add(a);
 //            System.out.println("Added actor: " + a.getName());
 //        }
-        //generator.genCrewXMLFile(actors);
-        ///////////// THEATRES  ///////////////
-        TheatreAgency ts = new TheatreAgency();
-        ArrayList<JSONObject> theatres = ts.getTheatres();
-        generator.genTheatreXMLFile(theatres);
-        
-        
-        ///////////// SHOWINGS ///////////////
-        ArrayList<JSONArray> theatreShowingsList = ts.getShowingsForTheatres(formattedDate);
-
-        generator.genShowingXMLFile(theatreShowingsList);
-         //System.out.println(Arrays.toString(theatreShowingsList.toArray()));
+//        System.out.println("STARTING CREW PARSE");
+//        generator.genCrewXMLFile(actors);
+//        
+//        ///////////// THEATRES  ///////////////
+//        TheatreAgency ts = new TheatreAgency();
+//        ArrayList<JSONObject> theatres = ts.getTheatres();
+//        System.out.println("STARTING THEATRE PARSE");
+//        generator.genTheatreXMLFile(theatres);
+//    
+//        ///////////// SHOWINGS ///////////////
+//        ArrayList<JSONArray> theatreShowingsList = ts.getShowingsForTheatres(formattedDate);
+//        System.out.println("STARTING SHOWING PARSE");
+//        generator.genShowingXMLFile(theatreShowingsList);
+//         //System.out.println(Arrays.toString(theatreShowingsList.toArray()));
     }
     
 }
