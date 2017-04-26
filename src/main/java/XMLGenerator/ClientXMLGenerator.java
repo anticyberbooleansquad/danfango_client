@@ -128,7 +128,7 @@ public class ClientXMLGenerator {
         stringWriter.close();
         System.out.println(xmlString);
 
-        FileWriter fw = new FileWriter("movieAgency3.xml");
+        FileWriter fw = new FileWriter("newMovie.xml");
         fw.write(xmlString);
         fw.close();
 
@@ -189,7 +189,7 @@ public class ClientXMLGenerator {
         stringWriter.close();
         System.out.println(xmlString);
 
-        FileWriter fw = new FileWriter("theatreAgency.xml");
+        FileWriter fw = new FileWriter("newTheatre.xml");
         fw.write(xmlString);
         fw.close();
 
@@ -288,6 +288,7 @@ public class ClientXMLGenerator {
             String age = actor.getAge();
             String bio = actor.getBiography();
             String poster = actor.getPoster();
+            String imdbId = actor.getImdbId();
 
             ArrayList<String> imdbIDs = actor.getMovieIds();
 
@@ -312,6 +313,10 @@ public class ClientXMLGenerator {
             xMLStreamWriter.writeStartElement("poster");
             xMLStreamWriter.writeCharacters(poster);
             xMLStreamWriter.writeEndElement();
+            
+            xMLStreamWriter.writeStartElement("imdbID");
+            xMLStreamWriter.writeCharacters(imdbId);
+            xMLStreamWriter.writeEndElement();
 
             xMLStreamWriter.writeStartElement("movies");
             for (String id : imdbIDs) {
@@ -334,7 +339,7 @@ public class ClientXMLGenerator {
         stringWriter.close();
         System.out.println(xmlString);
 
-        FileWriter fw = new FileWriter("actorAgency2.xml");
+        FileWriter fw = new FileWriter("newCrew.xml");
         fw.write(xmlString);
         fw.close();
 
