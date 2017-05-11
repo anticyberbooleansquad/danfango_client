@@ -12,6 +12,7 @@ package XMLGenerator;
 import CrewAgency.Actor;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -134,6 +135,81 @@ public class ClientXMLGenerator {
 
     }
 
+    public void genCrewXMLFile(HashSet<Actor> actors) throws XMLStreamException, IOException {
+        Iterator iter = actors.iterator();
+
+        StringWriter stringWriter = new StringWriter();
+
+        XMLOutputFactory xMLOutputFactory = XMLOutputFactory.newInstance();
+        XMLStreamWriter xMLStreamWriter = xMLOutputFactory.createXMLStreamWriter(stringWriter);
+
+        xMLStreamWriter.writeStartDocument();
+        xMLStreamWriter.writeStartElement("actors"); //start outer movies
+
+        while (iter.hasNext()) {
+            Actor actor = (Actor) iter.next();
+            String name = actor.getName();
+            String dob = actor.getBirthDate();
+            String age = actor.getAge();
+            String bio = actor.getBiography();
+            String poster = actor.getPoster();
+            String imdbId = actor.getImdbId();
+
+            ArrayList<String> imdbIDs = actor.getMovieIds();
+
+            xMLStreamWriter.writeStartElement("actor");
+
+            xMLStreamWriter.writeStartElement("name");
+            xMLStreamWriter.writeCharacters(name);
+            xMLStreamWriter.writeEndElement();
+
+            xMLStreamWriter.writeStartElement("birthday");
+            xMLStreamWriter.writeCharacters(dob);
+            xMLStreamWriter.writeEndElement();
+
+            xMLStreamWriter.writeStartElement("age");
+            xMLStreamWriter.writeCharacters(age);
+            xMLStreamWriter.writeEndElement();
+
+            xMLStreamWriter.writeStartElement("biography");
+            xMLStreamWriter.writeCharacters(bio);
+            xMLStreamWriter.writeEndElement();
+
+            xMLStreamWriter.writeStartElement("poster");
+            xMLStreamWriter.writeCharacters(poster);
+            xMLStreamWriter.writeEndElement();
+
+            xMLStreamWriter.writeStartElement("imdbID");
+            xMLStreamWriter.writeCharacters(imdbId);
+            xMLStreamWriter.writeEndElement();
+
+            xMLStreamWriter.writeStartElement("movies");
+            for (String id : imdbIDs) {
+                xMLStreamWriter.writeStartElement("movie");
+                xMLStreamWriter.writeCharacters(id);
+                xMLStreamWriter.writeEndElement();
+            }
+            xMLStreamWriter.writeEndElement();
+
+            ///////////
+            xMLStreamWriter.writeEndElement();
+        }
+        xMLStreamWriter.writeEndElement(); //end outer actors
+
+        xMLStreamWriter.writeEndDocument();
+        xMLStreamWriter.flush();
+        xMLStreamWriter.close();
+
+        String xmlString = stringWriter.getBuffer().toString();
+        stringWriter.close();
+        System.out.println(xmlString);
+
+        FileWriter fw = new FileWriter("newCrew.xml");
+        fw.write(xmlString);
+        fw.close();
+
+    }
+
     public void genTheatreXMLFile(ArrayList<JSONObject> theatres) throws XMLStreamException, IOException {
         StringWriter stringWriter = new StringWriter();
 
@@ -173,6 +249,18 @@ public class ClientXMLGenerator {
             xMLStreamWriter.writeStartElement("zipcode");
             xMLStreamWriter.writeCharacters(addressObj.get("postalCode").toString());
             xMLStreamWriter.writeEndElement();
+            
+            xMLStreamWriter.writeStartElement("reserved");
+            xMLStreamWriter.writeCharacters(theatre.get("reserved").toString());
+            xMLStreamWriter.writeEndElement();
+
+            xMLStreamWriter.writeStartElement("rooms");
+
+            xMLStreamWriter.writeStartElement("room");
+            xMLStreamWriter.writeCharacters(theatre.get("theatreId").toString());
+            xMLStreamWriter.writeEndElement();
+
+            xMLStreamWriter.writeEndElement();
 
             ///////////
             xMLStreamWriter.writeEndElement();
@@ -195,13 +283,114 @@ public class ClientXMLGenerator {
 
     }
 
-    /**
-     * This method creates a single theatre-showing section on the showings xml
-     *
-     * @param movies
-     * @throws XMLStreamException
-     * @throws IOException
-     */
+    public void genTheatreRoomXMLFile(ArrayList<JSONObject> theatres) throws XMLStreamException, IOException {
+        String layout1 = ""
+                + "<row row=\"a\">0,0,0,1,1,1,1,0,0,0</row>"
+                + "<row row=\"b\">1,1,0,1,1,1,1,0,1,1</row>"
+                + "<row row=\"c\">1,1,0,1,1,1,1,0,1,1</row>"
+                + "<row row=\"d\">1,1,0,1,1,1,1,0,1,1</row>"
+                + "<row row=\"e\">1,1,0,1,1,1,1,0,1,1</row>"
+                + "<row row=\"f\">1,1,0,1,1,1,1,0,1,1</row>"
+                + "<row row=\"g\">1,1,0,1,1,1,1,0,1,1</row>"
+                + "<row row=\"h\">1,1,0,1,1,1,1,0,1,1</row>"
+                + "<row row=\"i\">1,1,0,1,1,1,1,0,1,1</row>"
+                + "<row row=\"j\">1,1,0,1,1,1,1,0,1,1</row>";
+        String layout2 = ""
+                + "<row row=\"a\">1,1,1,0,1,1,0,1,1,1</row>"
+                + "<row row=\"b\">1,1,1,0,1,1,0,1,1,1</row>"
+                + "<row row=\"c\">1,1,1,0,1,1,0,1,1,1</row>"
+                + "<row row=\"d\">1,1,1,0,1,1,0,1,1,1</row>"
+                + "<row row=\"e\">0,0,0,0,1,1,0,0,0,0</row>"
+                + "<row row=\"f\">1,1,1,1,1,1,1,1,1,1</row>"
+                + "<row row=\"g\">1,1,1,1,1,1,1,1,1,1</row>"
+                + "<row row=\"h\">1,1,1,1,1,1,1,1,1,1</row>"
+                + "<row row=\"i\">0,0,0,1,1,1,1,0,0,0</row>"
+                + "<row row=\"j\">0,0,0,1,1,1,1,0,0,0</row>";
+
+        String layout3 = ""
+                + "<row row=\"a\">0,0,0,0,1,1,0,0,0,0</row>"
+                + "<row row=\"b\">0,0,0,1,1,1,1,0,0,0</row>"
+                + "<row row=\"c\">0,0,1,1,1,1,1,1,0,0</row>"
+                + "<row row=\"d\">0,0,1,1,1,1,1,1,0,0</row>"
+                + "<row row=\"e\">0,1,1,1,1,1,1,1,1,0</row>"
+                + "<row row=\"f\">1,1,1,1,0,0,1,1,1,1</row>"
+                + "<row row=\"g\">0,1,1,1,1,1,1,1,1,0</row>"
+                + "<row row=\"h\">0,0,1,1,1,1,1,1,0,0</row>"
+                + "<row row=\"i\">0,0,0,1,1,1,1,0,0,0</row>"
+                + "<row row=\"j\">0,0,0,0,1,1,0,0,0,0</row>";
+
+        StringWriter stringWriter = new StringWriter();
+        OutputStream outputStream = System.out;
+
+        XMLOutputFactory xMLOutputFactory = XMLOutputFactory.newInstance();
+        XMLStreamWriter xMLStreamWriter = xMLOutputFactory.createXMLStreamWriter(stringWriter);
+
+        xMLStreamWriter.writeStartDocument();
+        xMLStreamWriter.writeStartElement("rooms");
+
+        for (JSONObject theatre : theatres) {
+
+            xMLStreamWriter.writeStartElement("room");
+
+            xMLStreamWriter.writeStartElement("theatreId");
+            xMLStreamWriter.writeCharacters(theatre.get("theatreId").toString());
+            xMLStreamWriter.writeEndElement();
+
+            xMLStreamWriter.writeStartElement("roomId");
+            xMLStreamWriter.writeCharacters(theatre.get("theatreId").toString());
+            xMLStreamWriter.writeEndElement();
+
+            String reserved = theatre.get("reserved").toString();
+
+            if (reserved.equals("true")) {
+                double seatingType = Math.random();
+
+                String layout = "";
+                String numSeats = "";
+
+                if (seatingType < .33) {
+                    layout = layout1;
+                    numSeats = "76";
+                } else if (seatingType < .66) {
+                    layout = layout2;
+                    numSeats = "66";
+                } else {
+                    layout = layout3;
+                    numSeats = "50";
+                }
+
+                xMLStreamWriter.writeStartElement("numSeats");
+                xMLStreamWriter.writeCharacters(numSeats);
+                xMLStreamWriter.writeEndElement();
+
+                xMLStreamWriter.writeStartElement("seatingLayout");
+                xMLStreamWriter.writeCharacters(layout);
+                xMLStreamWriter.writeEndElement();
+            }
+
+            xMLStreamWriter.writeEndElement();
+
+        }
+
+        xMLStreamWriter.writeEndElement(); //end outer rooms
+
+        xMLStreamWriter.writeEndDocument();
+        xMLStreamWriter.flush();
+        xMLStreamWriter.close();
+
+        String xmlString = stringWriter.getBuffer().toString();
+        xmlString = xmlString.replace("&lt;", "<");
+        xmlString = xmlString.replace("&gt;", ">");
+
+        stringWriter.close();
+        System.out.println(xmlString);
+
+        FileWriter fw = new FileWriter("rooms.xml");
+        fw.write(xmlString);
+        fw.close();
+
+    }
+
     public void genShowingXMLFile(ArrayList<JSONArray> theatreShowingsList) throws XMLStreamException, IOException {
         StringWriter stringWriter = new StringWriter();
 
@@ -270,78 +459,4 @@ public class ClientXMLGenerator {
 
     }
 
-    public void genCrewXMLFile(HashSet<Actor> actors) throws XMLStreamException, IOException {
-        Iterator iter = actors.iterator();
-
-        StringWriter stringWriter = new StringWriter();
-
-        XMLOutputFactory xMLOutputFactory = XMLOutputFactory.newInstance();
-        XMLStreamWriter xMLStreamWriter = xMLOutputFactory.createXMLStreamWriter(stringWriter);
-
-        xMLStreamWriter.writeStartDocument();
-        xMLStreamWriter.writeStartElement("actors"); //start outer movies
-
-        while (iter.hasNext()) {
-            Actor actor = (Actor) iter.next();
-            String name = actor.getName();
-            String dob = actor.getBirthDate();
-            String age = actor.getAge();
-            String bio = actor.getBiography();
-            String poster = actor.getPoster();
-            String imdbId = actor.getImdbId();
-
-            ArrayList<String> imdbIDs = actor.getMovieIds();
-
-            xMLStreamWriter.writeStartElement("actor");
-
-            xMLStreamWriter.writeStartElement("name");
-            xMLStreamWriter.writeCharacters(name);
-            xMLStreamWriter.writeEndElement();
-
-            xMLStreamWriter.writeStartElement("birthday");
-            xMLStreamWriter.writeCharacters(dob);
-            xMLStreamWriter.writeEndElement();
-
-            xMLStreamWriter.writeStartElement("age");
-            xMLStreamWriter.writeCharacters(age);
-            xMLStreamWriter.writeEndElement();
-
-            xMLStreamWriter.writeStartElement("biography");
-            xMLStreamWriter.writeCharacters(bio);
-            xMLStreamWriter.writeEndElement();
-            
-            xMLStreamWriter.writeStartElement("poster");
-            xMLStreamWriter.writeCharacters(poster);
-            xMLStreamWriter.writeEndElement();
-            
-            xMLStreamWriter.writeStartElement("imdbID");
-            xMLStreamWriter.writeCharacters(imdbId);
-            xMLStreamWriter.writeEndElement();
-
-            xMLStreamWriter.writeStartElement("movies");
-            for (String id : imdbIDs) {
-                xMLStreamWriter.writeStartElement("movie");
-                xMLStreamWriter.writeCharacters(id);
-                xMLStreamWriter.writeEndElement();
-            }
-            xMLStreamWriter.writeEndElement();
-
-            ///////////
-            xMLStreamWriter.writeEndElement();
-        }
-        xMLStreamWriter.writeEndElement(); //end outer actors
-
-        xMLStreamWriter.writeEndDocument();
-        xMLStreamWriter.flush();
-        xMLStreamWriter.close();
-
-        String xmlString = stringWriter.getBuffer().toString();
-        stringWriter.close();
-        System.out.println(xmlString);
-
-        FileWriter fw = new FileWriter("newCrew.xml");
-        fw.write(xmlString);
-        fw.close();
-
-    }
 }
