@@ -42,8 +42,9 @@ public class TheatreAgency {
      */
     public ArrayList<JSONObject> getTheatres() throws IOException, XMLStreamException {
         ArrayList<JSONObject> theatres = new ArrayList();
+        
 
-        URL theatreAPI = new URL("http://data.tmsapi.com/v1.1/theatres?zip=11757&radius=5&units=mi&numTheatres=1000&api_key=7k72q6prdt4z44t764r3jw7t");
+        URL theatreAPI = new URL("http://data.tmsapi.com/v1.1/theatres?zip=11757&radius=100&units=mi&numTheatres=1000&api_key=7k72q6prdt4z44t764r3jw7t");
         try (BufferedReader in = new BufferedReader(new InputStreamReader(theatreAPI.openStream()))) {
             String inputLine = in.readLine();
             JSONArray theatresJSON = null;
@@ -51,13 +52,22 @@ public class TheatreAgency {
                 theatresJSON = new JSONArray(inputLine);
 
                 for (int i = 0; i < theatresJSON.length(); i++) {
+                    double reservedType = Math.random();
                     JSONObject jsonObj = theatresJSON.getJSONObject(i);
+                    
+                    if(reservedType < .5){
+                        jsonObj.put("reserved", "true");
+                    }
+                    else{
+                        jsonObj.put("reserved", "false");
+                    }
+                    
                     theatres.add(jsonObj);
                     String theatreId = jsonObj.get("theatreId").toString();
                     theatreIds.add(theatreId);
                 }
-                System.out.println(Arrays.toString(theatres.toArray()));
-                System.out.println(Arrays.toString(theatreIds.toArray()));
+                //System.out.println(Arrays.toString(theatres.toArray()));
+                //System.out.println(Arrays.toString(theatreIds.toArray()));
             }
         }
         return theatres;
@@ -68,7 +78,7 @@ public class TheatreAgency {
         ArrayList<JSONArray> theatreShowingsList = new ArrayList();
 
         for (String id : theatreIds) {
-            Thread.sleep(500);
+            Thread.sleep(1000);
 
             URL theatreAPI = new URL("https://data.tmsapi.com/v1.1/theatres/" + id + "/showings?startDate=" + date + "&api_key=7k72q6prdt4z44t764r3jw7t");
             HttpURLConnection connection = (HttpURLConnection) theatreAPI.openConnection();
@@ -76,14 +86,14 @@ public class TheatreAgency {
             connection.connect();
 
             int code = connection.getResponseCode();
-            System.out.println("CODE for " + id + " " + code);
+            //System.out.println("CODE for " + id + " " + code);
 
             if (code != 403) {
                 try (BufferedReader in = new BufferedReader(new InputStreamReader(theatreAPI.openStream()))) {
                     String inputLine = in.readLine();
                     JSONArray theatreShowings = null;
                     if (inputLine != null) {
-                        System.out.println("Theatre " + id + " " + inputLine);
+                        //System.out.println("Theatre " + id + " " + inputLine);
                         theatreShowings = new JSONArray(inputLine);
                         if (theatreShowings.length() != 0) {
                             theatreShowingsList.add(theatreShowings);

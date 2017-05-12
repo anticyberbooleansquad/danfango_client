@@ -3,28 +3,53 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package CrewAgency;
 
 import java.util.ArrayList;
 
 /**
- * 
+ *
  * @author Sammy Guergachi <sguergachi at gmail.com>
  */
 public class Actor {
-        private String name;
-        private String birthDate;
-        private String age; 
-        private String biography;
-        private ArrayList<String> movieIds; 
-        
-        
-        public Actor(){
-            movieIds = new ArrayList();
-        }
-        
-        
+
+    private String name;
+    private String birthDate;
+    private String age;
+    private String biography;
+    private String imdbId;
+    private String tmdbId;
+    private String poster;
+    private ArrayList<String> movieIds;
+
+    public Actor() {
+        movieIds = new ArrayList();
+    }
+
+    public String getPoster() {
+        return poster;
+    }
+
+    public void setPoster(String poster) {
+        this.poster = poster;
+    }
+
+    public String getImdbId() {
+        return imdbId;
+    }
+
+    public void setImdbId(String imdbId) {
+        this.imdbId = imdbId;
+    }
+
+    public String getTmdbId() {
+        return tmdbId;
+    }
+
+    public void setTmdbId(String tmdbId) {
+        this.tmdbId = tmdbId;
+    }
+
 //        @Override
 //    public boolean equals(Object o){
 //        if(this == o){
@@ -47,7 +72,6 @@ public class Actor {
 //        result = result * biography.hashCode();
 //        return result;
 //    }
-
     /**
      * @return the name
      */
