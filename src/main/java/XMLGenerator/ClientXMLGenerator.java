@@ -356,7 +356,7 @@ public class ClientXMLGenerator {
                     numSeats = "66";
                 } else {
                     layout = layout3;
-                    numSeats = "50";
+                    numSeats = "54";
                 }
 
                 xMLStreamWriter.writeStartElement("numSeats");
