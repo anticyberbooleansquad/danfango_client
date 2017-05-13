@@ -353,7 +353,7 @@ public class ClientXMLGenerator {
                     numSeats = "76";
                 } else if (seatingType < .66) {
                     layout = layout2;
-                    numSeats = "66";
+                    numSeats = "72";
                 } else {
                     layout = layout3;
                     numSeats = "54";
