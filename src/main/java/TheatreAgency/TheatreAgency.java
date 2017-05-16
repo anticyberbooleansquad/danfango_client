@@ -42,6 +42,7 @@ public class TheatreAgency {
      */
     public ArrayList<JSONObject> getTheatres() throws IOException, XMLStreamException {
         ArrayList<JSONObject> theatres = new ArrayList();
+        
 
         URL theatreAPI = new URL("http://data.tmsapi.com/v1.1/theatres?zip=11757&radius=100&units=mi&numTheatres=1000&api_key=7k72q6prdt4z44t764r3jw7t");
         try (BufferedReader in = new BufferedReader(new InputStreamReader(theatreAPI.openStream()))) {
@@ -51,7 +52,16 @@ public class TheatreAgency {
                 theatresJSON = new JSONArray(inputLine);
 
                 for (int i = 0; i < theatresJSON.length(); i++) {
+                    double reservedType = Math.random();
                     JSONObject jsonObj = theatresJSON.getJSONObject(i);
+                    
+                    if(reservedType < .5){
+                        jsonObj.put("reserved", "true");
+                    }
+                    else{
+                        jsonObj.put("reserved", "false");
+                    }
+                    
                     theatres.add(jsonObj);
                     String theatreId = jsonObj.get("theatreId").toString();
                     theatreIds.add(theatreId);
