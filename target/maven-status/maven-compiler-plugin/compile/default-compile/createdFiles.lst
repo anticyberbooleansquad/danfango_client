@@ -1,6 +1,6 @@
 Main/AgencyController.class
-TheatreAgency/TheatreAgency.class
 MovieAgency/MovieAgency.class
+TheatreAgency/TheatreAgency.class
 CrewAgency/CrewAgency.class
 XMLGenerator/ClientXMLGenerator.class
 MovieAgency/MoviePush.class

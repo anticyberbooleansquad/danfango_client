@@ -78,10 +78,10 @@ public class AgencyController {
 
     
         ///////////// SHOWINGS ///////////////
-        ArrayList<JSONArray> theatreShowingsList = ts.getShowingsForTheatres(formattedDate);
-        System.out.println("STARTING SHOWING PARSE");
-        generator.genShowingXMLFile(theatreShowingsList);
-        System.out.println(Arrays.toString(theatreShowingsList.toArray()));
+//        ArrayList<JSONArray> theatreShowingsList = ts.getShowingsForTheatres(formattedDate);
+//        System.out.println("STARTING SHOWING PARSE");
+//        generator.genShowingXMLFile(theatreShowingsList);
+//        System.out.println(Arrays.toString(theatreShowingsList.toArray()));
     }
     
 }

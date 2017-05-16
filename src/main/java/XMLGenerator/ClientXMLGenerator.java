@@ -385,7 +385,7 @@ public class ClientXMLGenerator {
         stringWriter.close();
         System.out.println(xmlString);
 
-        FileWriter fw = new FileWriter("rooms.xml");
+        FileWriter fw = new FileWriter("newRooms.xml");
         fw.write(xmlString);
         fw.close();
 
